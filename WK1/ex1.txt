@@ -1,0 +1,15 @@
+(a) print type("This is the first Week!")
+(b) print "This is the first Week!"
+(c) print type(24)
+(d) print 24
+(e) print type(2.4)
+(f) print 2.4
+(g) print type("24")
+(h) print "24"
+(i) print type(’2.4’)
+(j) print type("""2.4""")
+(k) print type(’’’2.4’’’)
+(l) print 10300
+(m) print 10,300
+(n) print 10.300
+(o) print type(10.300)
