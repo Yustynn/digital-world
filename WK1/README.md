@@ -15,3 +15,12 @@ This auto-submits the answers to tutor.
 Currently, it just logs in and goes to week 1. Uses firefox (geckodriver).
 
 Ensure that you have your credentials as `TUTOR_USERNAME` and `TUTOR_PASSWORD` in your environment (your `.bashrc` or whatever)
+
+## Things Explored / Exploring
+- [Splinter](https://github.com/cobrateam/splinter) for browser automation
+- Accessing environment variables
+- Accessing command line variables
+- [termcolor](https://pypi.python.org/pypi/termcolor) for adding color to STDOUT
+- Reading files
+- `exec`
+- `time.sleep` (I'm not satisfied with this solution to stop the program from quitting in `automate-tutor-submission.py`
