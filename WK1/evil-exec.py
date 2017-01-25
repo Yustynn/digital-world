@@ -1,16 +1,23 @@
 import re
-import sys
 
-from termcolor import cprint
+def get_answers(ex):
+    file = open(ex + '.txt')
+    answers = []
+    
+    for ln in file:
+        qn = {
+            'letter': re.match('\((.)\)', ln).group(1),
+            'command': re.split('\(.\) ', ln)[1].replace('print ',
+                '').replace('\n', '')
+        }
 
-file = open(sys.argv[1]+'.txt')
+        try:
+            qn['answer'] = eval(qn['command'])
+        except:
+            qn['answer'] = 'Error'
 
-for ln in file:
-    exLetter = re.match('\((.)\)', ln).group(1)
-    exCommand = re.split('\(.\) ', ln)[1]
-    cprint('\n\n'+ln, 'magenta')
+        answers.append(qn)
 
-    try:
-        exec(exCommand)
-    except:
-        print('Error')
+    return answers
+
+print get_answers('ex1')

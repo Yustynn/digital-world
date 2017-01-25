@@ -15,5 +15,10 @@ with Browser() as browser:
     
     button = browser.find_by_name('display-problems wk=1')
     button.click()
+    
+    # Question selection page
+    # note: can swap out Q1 for Q(number)
+    button = browser.find_by_value('Wk.1.1.1')
+    button.click()
     sleep(5000)
 
