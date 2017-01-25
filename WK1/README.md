@@ -24,3 +24,8 @@ Ensure that you have your credentials as `TUTOR_USERNAME` and `TUTOR_PASSWORD` i
 - Reading files
 - `exec`
 - `time.sleep` (I'm not satisfied with this solution to stop the program from quitting in `automate-tutor-submission.py`
+
+## TODO
+[] Automate checking if answers are correct
+[] Replace `sleep` in submission automation with something less ridiculous
+[] Check out assignment destructuring. I'm not happy with the calls to `environ` in the answer script
