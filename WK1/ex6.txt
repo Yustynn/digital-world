@@ -1,0 +1,9 @@
+(a) print 5 + 3
+(b) print 5 - 3
+(c) print 5 * 3
+(d) print 5 ** 3
+(e) print 5 / 3
+(f) print 5 // 3
+(g) print 5 / 3.0
+(h) print 5.0 / 3
+(i) print 5 % 3
