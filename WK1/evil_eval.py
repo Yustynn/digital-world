@@ -20,4 +20,3 @@ def get_answers(ex):
 
     return answers
 
-print get_answers('ex1')
