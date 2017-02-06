@@ -83,21 +83,38 @@ def is_prime(n):
     return not any([d for d in xrange(2, n) if n % d == 0]) and n > 1
 
 ### PROBLEM 5 ###
+
 from math import e
 
 def to_three_dp(f):
     return lambda *args: round( f(*args), 3 )
 
+
+# tests aren't being run. Why? Because decorated?
 @to_three_dp
-def approx_ode(t, h=0.1):
-    def y_iterator(y_prev, t_n):
-        f = 3 + e**(-t_n) - y_prev/2
-        return y_prev + h*f
-    return reduce(y_iterator, xrange(1, t), 0)
+def approx_ode(h, t0, y0, t):
+    '''
+    >>> approx_ode(0.1, 0, 1, 3)
+    5.292
+    >>> approx_ode(0.1, 0, 1, 4)
+    5.601
+    >>> approx_ode(0.1, 0, 1, 5)
+    5.771
+    >>> approx_ode(0.1, 0, 1, 2.5)
+    5.045
+    '''
 
-for i in xrange(3, 6):
-    print approx_ode(i)
+    steps_per_unit = int(1/h)
+    t_limit = int(t*steps_per_unit)
 
+    f = lambda n, y: 3 + e**-n - 0.5*y
+    y_next = lambda y_n, f: y_n + h*f
+
+    def y_iterator(y_n, i):
+        t_n = i*h
+        return y_next( y_n, f(t_n, y_n) )
+
+    return reduce(y_iterator, xrange(0, t_limit ), 1)
 
 
 if __name__ == '__main__':
