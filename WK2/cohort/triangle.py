@@ -15,10 +15,7 @@ def area_of_triangle(*points):
     side_lens.append( get_len(p1, p2) )
 
   s = sum(side_lens) / 2
-  
-  for l in side_lens:
-      print l
-  print 'S: {0}'.format(s)
+
   side_lens = side_lens[::-1]
 
   ans = sqrt( reduce(lambda curr,l: curr*(s-l), side_lens, s ) )
@@ -34,4 +31,4 @@ for pt_num in ['first', 'second', 'third']:
 
     points.append(p)
 
-print area_of_triangle(*points)
+print "\033[92mThe area of the triangle is {0}".format( area_of_triangle(*points) )

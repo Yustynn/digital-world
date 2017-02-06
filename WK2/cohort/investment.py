@@ -6,6 +6,9 @@ def compound_value_sixth_months(amt, rate):
     val += amt
     val *= 1 + rate
 
-  return val
+  return round(val, 2)
 
-print compound_value_sixth_months(100,0.05)
+amt = int( raw_input("Enter the monthly saving amount: ") )
+rate = float( raw_input("Enter annual interest rate: ") )
+
+print "After the sixth month, the account value is {0}".format(compound_value_sixth_months(amt, rate))
