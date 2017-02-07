@@ -116,7 +116,6 @@ def approx_ode(h, t0, y0, t):
 
     return reduce(y_iterator, xrange(0, t_limit ), 1)
 
-
 if __name__ == '__main__':
     import doctest
     doctest.testmod()
