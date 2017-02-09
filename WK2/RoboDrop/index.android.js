@@ -20,14 +20,8 @@ import {
 } from 'react-native';
 
 import firebase from 'firebase'
+import { firebaseConfig } from './secrets'
 
-  var firebaseConfig = {
-    apiKey: "AIzaSyCC-VFSd0rG2TPOol9tLoeHFM5FTspflAs",
-    authDomain: "infra-agent-126901.firebaseapp.com",
-    databaseURL: "https://infra-agent-126901.firebaseio.com",
-    storageBucket: "infra-agent-126901.appspot.com",
-    messagingSenderId: "858144323121"
-  };
 firebase.initializeApp(firebaseConfig);
 //
 // Create a reference with .ref() instead of new Firebase(url)

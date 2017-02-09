@@ -13,7 +13,7 @@ def check_value(n1, n2, n3, x):
     True
     '''
 
-    return x > n1 and x > n2 and x < n3
+    return x < n1 and x > n2 and x < n3
 
 ### PROBLEM 2 ###
 def c_to_f(c):
@@ -91,6 +91,8 @@ def to_three_dp(f):
 
 
 # tests aren't being run. Why? Because decorated?
+# You may be asking yourself, why the reduce in this case? Doesn't it just
+# convolute things? Wouldn't a while loop be better? The answer is simple: yes.
 @to_three_dp
 def approx_ode(h, t0, y0, t):
     '''
@@ -114,7 +116,7 @@ def approx_ode(h, t0, y0, t):
         t_n = i*h
         return y_next( y_n, f(t_n, y_n) )
 
-    return reduce(y_iterator, xrange(0, t_limit ), 1)
+    return reduce(y_iterator, xrange(0, t_limit), 1)
 
 if __name__ == '__main__':
     import doctest
