@@ -1,6 +1,6 @@
-from functools import wraps
-
 ### HELPERS ###
+
+from functools import wraps
 
 # decorator to limit dp (handles tuples, lists, and numbers)
 def to_dp(n):
@@ -28,8 +28,9 @@ def ensure_float_args(f):
     return apply_float_args
 
 ### STARTING PROPER ###
+
 import numpy as np
-import scipy.constants as c
+import scipy.constants as CONST
 from numpy import sin, cos, arctan, sign
 
 ### Question 1 ###
@@ -45,14 +46,22 @@ def energy_n(n):
     -1.51174
     '''
 
-    e         = c.e
-    epsilon_0 = c.epsilon_0
-    h         = c.h, m_e, = c.e, c.epsilon_0, c.h, c.m_e
-    e_v = c.physical_constants['electron volt'](0)
+    e           = CONST.e
+    pi          = CONST.pi
+    epsilon_0   = CONST.epsilon_0
+    h_bar       = CONST.hbar
+    m_e         = CONST.m_e
+    e_v         = CONST.physical_constants['electron volt'][0]
+    R           = CONST.Rydberg
+    c           = CONST.c
 
-    return (-e**4 * m_e) / (8 * epsilon_0 * n**2 * h**2)
+    term1 = m_e / (2 * h_bar**2)
+    term2 = e**2 / (4 * pi * epsilon_0)
+    term3 = n**-2
 
+    joules = - term1 * (term2**2) * term3
 
+    return joules / e_v
 
 
 ### Question 2 ###
