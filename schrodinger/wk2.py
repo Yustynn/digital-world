@@ -30,7 +30,7 @@ def ensure_float_args(f):
 ### STARTING PROPER ###
 
 import numpy as np
-import scipy.constants as CONST
+import scipy.constants as c
 from numpy import sin, cos, arctan, sign
 
 ### Question 1 ###
@@ -46,14 +46,13 @@ def energy_n(n):
     -1.51174
     '''
 
-    e           = CONST.e
-    pi          = CONST.pi
-    epsilon_0   = CONST.epsilon_0
-    h_bar       = CONST.hbar
-    m_e         = CONST.m_e
-    e_v         = CONST.physical_constants['electron volt'][0]
-    R           = CONST.Rydberg
-    c           = CONST.c
+    e           = c.e
+    epsilon_0   = c.epsilon_0
+    h_bar       = c.hbar
+    m_e         = c.m_e
+    pi          = c.pi
+
+    e_v         = c.physical_constants['electron volt'][0]
 
     term1 = m_e / (2 * h_bar**2)
     term2 = e**2 / (4 * pi * epsilon_0)
