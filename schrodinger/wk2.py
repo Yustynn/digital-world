@@ -2,7 +2,7 @@
 
 from functools import wraps
 
-# decorator to limit dp (handles tuples, lists, and numbers)
+# decorator to limit output's dp (handles tuples, lists, and numbers)
 def to_dp(n):
     def to_dp_wrapper(f):
         @wraps(f)
