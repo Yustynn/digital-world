@@ -4,10 +4,10 @@
 
 # here's an example of how it's done.
 
-# this function is like a factory that creates specific types of functions
-# these create functions all do the same thing: they take any number (as n2)
+# this function is like a factory that creates and then returns specific types of functions
+# these created functions all do the same thing: they take any number (as n2)
 # and add a fixed number (n1) to it
-# the difference between them is what this fixed number is.
+# the difference between the created functions is what this fixed number is.
 def create_adder(n1):
     # let's make the adder function. A new one gets made everytime create_adder is called
     def adder(n2):
