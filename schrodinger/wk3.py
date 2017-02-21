@@ -1,41 +1,43 @@
-from sympy import diff, exp, factorial, symbols, init_printing
-from wk2 import deg_to_rad
-
-init_printing(use_unicode=True)
+from sympy import diff, exp, factorial, symbols
+from math import cos, isnan
 
 def assoc_legendre(m_val, l_val):
+    '''
+    >>> assoc_legendre(0,0)(1)
+    1.00000000000000
+    >>> assoc_legendre(1,1)(1)
+    0.841470984807896
+    >>> assoc_legendre(2,3)(1)
+    5.73860550925719
+    >>> assoc_legendre(2,3)(0)
+    0.0
+    '''
     m, l, x = symbols('m l x')
 
     def P_l():
         term1 = 1 / ( 2**l * factorial(l) )
         term2 = diff( (x**2 - 1)**l, x, l_val )
-        
+
         return term1 * term2
-    
-    def legendre(x_val):
+
+    def legendre(theta_val):
+        x_val = cos(theta_val)
+
         term1 = ( 1 - x**2 )**( abs(m)/ 2 )
         term2 = diff( P_l(), x, abs(m_val) )
 
         ans_expr = term1 * term2
-        
-        print '\n'
-        print P_l(), P_l().subs({
-            x: 1.*x_val,
-            l: 1.*l_val
-        })
 
-        return ans_expr.subs({
+        ans_val = ans_expr.subs({
             m: 1.*m_val,
             l: 1.*l_val,
             x: 1.*x_val
         })
 
-    return legendre
 
-#print assoc_legendre(0,0)(1)
-#print assoc_legendre(1,1)(1)
-#print assoc_legendre(2,3)(1)
-#print assoc_legendre(2,3)(0)
+        return 0.0 if isnan(ans_val) else ans_val # I'm a haxx0r
+
+    return legendre
 
 def assoc_laguerre(p_val, qmp_val):
     '''
@@ -50,7 +52,7 @@ def assoc_laguerre(p_val, qmp_val):
     '''
     q_val = qmp_val + p_val
     p, q, x = symbols('p q x')
-    
+
     def L_q():
         term1 = exp(x)
 

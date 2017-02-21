@@ -2,6 +2,8 @@ from eBot import eBot
 from time import sleep
 from firebase import firebase
 
+TIMEOUT = 0.5
+
 url = "https://my-awesome-project-65917.firebaseio.com/" # URL to Firebase database
 token = "h2w4wXwW5dUhSB6jbAxa55JrU1qcEpHxxdK4FolM" # unique token used for authentication
 
@@ -17,18 +19,17 @@ ebot.connect() # connect to the eBot via Bluetooth
 # the Firebase database.
 no_commands = True
 
-def move(direction):
+def move(direction, sleep_time = 1):
     direction_map = {
-        'left': (-1,1),
-        'right': (1,-1),
-        'forward': (1,1)
+        # direction: (left_motor_speed, right_motor_speed)
+        'left':     (-1 ,1),
+        'right':    (1, -1),
+        'forward':  (1, 1)
     }
 
-    ebot.wheels(*direction_map[direction])
-    sleep(1)
+    ebot.wheels( *direction_map[direction] )
+    sleep(sleep_time)
     ebot.wheels(0,0)
-
-move('left')
 
 directions = firebase.get('/movement_list')
 
@@ -43,13 +44,16 @@ while no_commands:
     # specified in the movement_list in sequential order. Each movement in the
     # list lasts exactly 1 second.
 
-    # Get movement list from Firebase
-    movement_list = None
+    movement_list = firebase.get('/movement_list')
 
-    # Write your code here
+    if directions:
+        no_commands = False
+        for direction in movement_list:
+            move(direction)
+        firebase.delete('/movement_list') # is this correct?
 
 
-    sleep(0.5)
+    sleep(TIMEOUT)
 
 # Write the code to control the eBot here
 
