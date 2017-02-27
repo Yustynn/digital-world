@@ -1,5 +1,8 @@
-from sympy import diff, exp, factorial, symbols
+from sympy import diff, exp, factorial, simplify, symbols
 from math import cos, isnan
+
+from sympy import init_printing
+init_printing()
 
 def assoc_legendre(m_val, l_val):
     '''
@@ -18,15 +21,15 @@ def assoc_legendre(m_val, l_val):
         term1 = 1 / ( 2**l * factorial(l) )
         term2 = diff( (x**2 - 1)**l, x, l_val )
 
-        return term1 * term2
+        # without simplify, nan'd out
+        return simplify(term1 * term2)
 
     def legendre(theta_val):
         x_val = cos(theta_val)
 
         term1 = ( 1 - x**2 )**( abs(m)/ 2 )
         term2 = diff( P_l(), x, abs(m_val) )
-
-        ans_expr = term1 * term2
+        ans_expr = simplify(term1 * term2)
 
         ans_val = ans_expr.subs({
             m: 1.*m_val,
@@ -35,7 +38,8 @@ def assoc_legendre(m_val, l_val):
         })
 
 
-        return 0.0 if isnan(ans_val) else ans_val # I'm a haxx0r
+
+        return ans_val
 
     return legendre
 
@@ -59,7 +63,7 @@ def assoc_laguerre(p_val, qmp_val):
         term2_expr = exp(-x) * x**q_val
         term2 = diff( term2_expr, x, q_val )
 
-        return term1 * term2
+        return simplify(term1 * term2)
 
     def laguerre(x_val):
         vals = {
@@ -71,7 +75,7 @@ def assoc_laguerre(p_val, qmp_val):
         term1 = (-1)**p
         term2 = diff( L_q(), x, p_val )
 
-        ans_expr = term1 * term2
+        ans_expr = simplify(term1 * term2)
 
         return ans_expr.subs(vals)
 

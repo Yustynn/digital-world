@@ -9,15 +9,23 @@ def to_dp(n):
         def to_dp(*args, **kwargs):
             result = f(*args, **kwargs)
 
-            if isinstance(result, tuple):
-                return tuple(round(x, n) for x in result)
+            if isinstance(result, complex):
+                return complex( round(result.real, n), round(result.imag, n) )
             if isinstance(result, list):
                 return [round(x, n) for x in result]
+            if isinstance(result, tuple):
+                return tuple(round(x, n) for x in result)
             return round(result, n)
 
         return to_dp
 
     return to_dp_wrapper
+
+def outp_norm(n):
+    def norm_wrapper(f):
+        return lambda *args: f(*args) / n
+
+    return norm_wrapper
 
 def ensure_float_args(f):
     @wraps(f)
