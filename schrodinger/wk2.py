@@ -2,7 +2,7 @@
 
 from functools import wraps
 
-# decorator to limit output's dp (handles tuples, lists, and numbers)
+# decorator to limit output's dp (handles tuples, lists, complex numbers and numbers)
 def to_dp(n):
     def to_dp_wrapper(f):
         @wraps(f)
@@ -15,13 +15,14 @@ def to_dp(n):
                 return [round(x, n) for x in result]
             if isinstance(result, tuple):
                 return tuple(round(x, n) for x in result)
+
             return round(result, n)
 
         return to_dp
 
     return to_dp_wrapper
 
-def outp_norm(n):
+def norm(n):
     def norm_wrapper(f):
         return lambda *args: f(*args) / n
 

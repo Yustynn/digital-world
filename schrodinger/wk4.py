@@ -30,7 +30,7 @@ def angular_wave_func(m, l, theta, phi):
     return complex(epsilon * sqrt_term * after_sqrt, 0j)
 
 @to_dp(5)
-@outp_norm(a**-1.5)
+@norm(a**-1.5)
 def radial_wave_func(n, l, r):
     '''
     >>> radial_wave_func(1, 0, a)
