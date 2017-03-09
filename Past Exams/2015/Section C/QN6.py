@@ -43,21 +43,15 @@ def getSchedule(f):
     return sched
 
 
-# Note that the given answer for Thursday is wrong. It's 6, not 7.
 def findLength(sched):
     length = {}
 
     for day, timings in sched.items():
-        starts = []
-        ends = []
+        hours_count = 0
 
         for timing in timings:
-            starts.append( timing[0] )
-            ends.append( timing[1] )
+            hours_count += timing[1] - timing[0]
 
-        start = min(starts)
-        end   = max(ends)
-
-        length[day] = end - start
+        length[day] = hours_count
 
     return length
