@@ -1,14 +1,13 @@
-# helper function for findConflict.
 def is_timings_conflict(timings):
-    # timings.pop() removes the last element from timings and gives it to us
-    # start and end become the 0th and 1st elements of the removed tuple
-    start, end = timings.pop()
-
     for i in range( len(timings) ):
+        # timings.pop() removes the last element from timings and gives it to us
+        # start and end become the 0th and 1st elements of the removed tuple
+        start, end = timings.pop()
 
         for comp_timing in timings: # timings now has 1 less element!
             comp_start, comp_end = comp_timing
             # below brackets just to see clearer. A little convoluted...
+            # if it doesn't start after the comp_end, or end before the comp_start...
             if not ( (end <= comp_start ) or (start >= comp_end) ):
                 return True
 
