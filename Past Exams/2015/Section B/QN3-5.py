@@ -7,6 +7,7 @@ def comp(x):
     >>> comp(3)
     82
     '''
+
     return x**3 + 4*x**2 + 6*x + 1
 
 ############### QUESTION 4 ###############
@@ -29,6 +30,16 @@ def matAdd(A, B):
     >>> C
     [[11, 22, 33], [44, 55, 66]]
     '''
+
+    C = []
+
+    for y in range( len(A) ):
+        column = []
+        for x in range( len(A[0]) ):
+            column.append( A[y][x] + B[y][x] )
+        C.append(column)
+
+    return C
 
 if __name__ == '__main__':
     from doctest import testmod
