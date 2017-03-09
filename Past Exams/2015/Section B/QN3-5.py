@@ -22,6 +22,9 @@ def genList(start, end, divisor=3):
 
     return [n for n in range(start, end+1) if not n % divisor]
 
+
+############### QUESTION 5 ###############
+
 def matAdd(A, B):
     '''
     >>> A = [[1,2,3], [4, 5, 6]]
