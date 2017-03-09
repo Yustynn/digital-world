@@ -42,6 +42,8 @@ def getSchedule(f):
 
     return sched
 
+
+# Note that the given answer for Thursday is wrong. It's 6, not 7.
 def findLength(sched):
     length = {}
 

@@ -11,7 +11,7 @@ def countLitPixel(cx, cy, r):
     '''
 
     count = 0
-    # `lambda` is a one-line function w/ args `x` and `y`. RHS of `:` gets returned
+    # below is a one-line function w/ args `x` and `y`. RHS of `:` gets returned
     is_lt_r = lambda x, y: r > (x**2 + y**2)**0.5
 
     for x in range(-r, r+1):

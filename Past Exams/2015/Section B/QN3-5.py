@@ -1,3 +1,7 @@
+# The things in ''' are test cases.
+# If they pass, nothing will happen.
+# If they fail, Python will tell you.
+
 
 ############### QUESTION 3 ###############
 def comp(x):
@@ -12,6 +16,22 @@ def comp(x):
 
 ############### QUESTION 4 ###############
 
+def genList(start, end):
+    '''
+    >>> genList(2,12)
+    [3, 6, 9, 12]
+    >>> genList(2,20)
+    [3, 6, 9, 12, 15, 18]
+    '''
+    result = []
+
+    for n in range(start, end+1):
+        if n % 3 == 0:
+            result.append(n)
+
+    return result
+
+# More advanced version
 def genList(start, end, divisor=3):
     '''
     >>> genList(2,12)
@@ -21,7 +41,6 @@ def genList(start, end, divisor=3):
     '''
 
     return [n for n in range(start, end+1) if not n % divisor]
-
 
 ############### QUESTION 5 ###############
 
