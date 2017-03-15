@@ -55,3 +55,7 @@ def findLength(sched):
         length[day] = hours_count
 
     return length
+
+sched = {'Tuesday': [(12, 16), (9, 12), (15, 18), (19, 21)], 'Thursday': [(7, 11), (10, 13)], 'Wednesday': [(6, 8)], 'Monday': [(9, 11), (12, 14), (11, 12)]}
+
+print findLength(sched)

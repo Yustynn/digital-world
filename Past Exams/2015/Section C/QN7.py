@@ -14,8 +14,8 @@ def countLitPixel(cx, cy, r):
     # below is a one-line function w/ args `x` and `y`. RHS of `:` gets returned
     is_lt_r = lambda x, y: r > (x**2 + y**2)**0.5
 
-    for x in range(-r, r+1):
-        for y in range(-r, r+1):
+    for x in range(-r, r):
+        for y in range(-r, r):
             lbcorner = [x,   y  ]
             rbcorner = [x+1, y  ]
             ltcorner = [x,   y+1]
@@ -35,6 +35,8 @@ def countLitPixel(cx, cy, r):
             # to the count. Just do it the longer way
             count += any( [is_lt_r(*coords) for coords in corners] )
     return count
+
+print countLitPixel(1, 1, 20)
 
 if __name__ == '__main__':
     from doctest import testmod
