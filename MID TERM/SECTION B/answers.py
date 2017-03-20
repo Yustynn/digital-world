@@ -1,3 +1,5 @@
+##### HELPERS #####
+
 from functools import wraps
 
 # decorator to limit output's dp (handles tuples, lists, complex numbers and numbers)
@@ -33,6 +35,8 @@ def surgery(start, fns):
     return reduce( operate, fns, start )
 
 
+#### QUESTION 3 #####
+
 from math import pi, tan
 
 @to_dp(3)
@@ -49,6 +53,8 @@ def area_r_polygon(n, s):
     denom = 4 * tan(pi/n)
 
     return num/denom
+
+#### QUESTION 4 #####
 
 def mysum(a, b, limit):
     '''
@@ -81,7 +87,32 @@ def mysum(a, b, limit):
 
     return sum([n for n in range(limit) if (not n%a or not n%b)])
 
+#### QUESTION 5 ####
+students = [
+    ("Alan",["CompSci", "Physics", "Math"]),
+    ("Justin",["Math","CompSci","Stats"]),
+    ("Edward",["CompSci","Philosophy", "Economics"]),
+    ("Margaret",["InfSys","Accounting","Economics","CommLaw"]),
+    ("Philip",["Sociology","Economics", "Law", "Stats","Music"]),
+    ("Mary",["Math","CompSci","Stats"]),
+    ("Vera",["CompSci","Philosophy","Economics"]),
+    ("Mike",["InfSys","Accounting","Economics","CommLaw"]),
+    ("Donna",["Sociology","Economics","Law","Stats"])
+]
 
+def get_students(students, course):
+    '''
+    >>> get_students(students, 'Philosophy')
+    ['Edward', 'Vera']
+    >>> get_students(students, 'History')
+    []
+    >>> get_students(students, 'Math')
+    ['Alan', 'Justin', 'Mary']
+    >>> get_students(students, 'CompSci')
+    ['Alan', 'Justin', 'Edward', 'Mary', 'Vera']
+    '''
+    relevant = [student for student in students if course in student[1]]
+    return [student[0] for student in relevant]
 
 
 if __name__ == '__main__':

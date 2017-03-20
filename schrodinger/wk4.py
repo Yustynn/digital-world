@@ -1,12 +1,15 @@
 from wk3 import assoc_laguerre, assoc_legendre
-from wk2 import to_dp, outp_norm
+from wk2 import to_dp, norm
 
-from sympy import diff, exp, factorial, symbols, simplify
+from functools32 import lru_cache
+
+from sympy import diff, exp, factorial, symbols, simplify, pprint
 from math import cos, e, pi
 import scipy.constants as c
 
 a = c.physical_constants['Bohr radius'][0]
 
+@lru_cache(maxsize=32)
 @to_dp(5)
 def angular_wave_func(m, l, theta, phi):
     '''
@@ -17,7 +20,9 @@ def angular_wave_func(m, l, theta, phi):
     >>> angular_wave_func(0, 2, pi, 0)
     (0.63078+0j)
     '''
+
     P_m_l = assoc_legendre(m, l)
+
 
     epsilon = (-1)**m if m > 0 else 1
 
@@ -29,6 +34,7 @@ def angular_wave_func(m, l, theta, phi):
 
     return complex(epsilon * sqrt_term * after_sqrt, 0j)
 
+@lru_cache(maxsize=32)
 @to_dp(5)
 @norm(a**-1.5)
 def radial_wave_func(n, l, r):
@@ -42,6 +48,7 @@ def radial_wave_func(n, l, r):
     >>> radial_wave_func(3, 1, 2*a)
     0.08281
     '''
+
     p = 2*l + 1
     qmp = n - l - 1
 
@@ -49,7 +56,7 @@ def radial_wave_func(n, l, r):
 
     term1_sqrt_inner_1          =   (2 / (n*a))**3
     term1_sqrt_inner_2_num      =   factorial(qmp)
-    term1_sqrt_inner_2_denom    =   2*n * ( factorial(n + l) )**3
+    term1_sqrt_inner_2_denom    =   2*n * ( factorial(n+l) )**3
     term1_sqrt_inner_2          =   term1_sqrt_inner_2_num / term1_sqrt_inner_2_denom
 
     term1 = (term1_sqrt_inner_1 * term1_sqrt_inner_2)**0.5

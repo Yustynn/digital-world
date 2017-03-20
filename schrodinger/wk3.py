@@ -1,9 +1,8 @@
 from sympy import diff, exp, factorial, simplify, symbols
 from math import cos, isnan
+from functools32 import lru_cache
 
-from sympy import init_printing
-init_printing()
-
+@lru_cache(maxsize=32)
 def assoc_legendre(m_val, l_val):
     '''
     >>> assoc_legendre(0,0)(1)
@@ -32,17 +31,16 @@ def assoc_legendre(m_val, l_val):
         ans_expr = simplify(term1 * term2)
 
         ans_val = ans_expr.subs({
-            m: 1.*m_val,
-            l: 1.*l_val,
-            x: 1.*x_val
+            m: m_val,
+            l: l_val,
+            x: x_val
         })
-
-
 
         return ans_val
 
     return legendre
 
+@lru_cache(maxsize=32)
 def assoc_laguerre(p_val, qmp_val):
     '''
     >>> assoc_laguerre(0,0)(1)
