@@ -1,12 +1,7 @@
 import RPi.GPIO as IO
 
 IO.setwarnings(False)
-
-# tells it to use GPIO numbers instead of PIN NUMBERs
-# e.g. 19 for GPIO19 instead of 35 for PIN35 aka GPIO19
 IO.setmode(IO.BCM)
-
-IO.setup(18, IO.OUT)
 
 class Channel(object):
     def __init__(self, pin):
@@ -22,16 +17,21 @@ class PWM(Channel):
 
     def set_power(self, power):
         self.pwm.ChangeDutyCycle(power * 100)
-        print 'power set to '+str(power)
 
-p = PWM(18)
-p.start(0)
+    def stop(self):
+        self.pwm.stop()
+
 
 class WaterPump(object):
+    pwm = PWM(18)
+    
     def __init__(self, pin1, pin2):
         self.channels = [Channel(pin) for pin in [pin1, pin2]]
         IO.output(self.channels[0].pin, True)
         IO.output(self.channels[1].pin, False)
 
     def set_power(self, power):
-        p.set_power(power)
+        self.pwm.set_power(power)
+
+    def stop(self):
+        self.pwm.stop()

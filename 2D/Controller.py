@@ -38,8 +38,6 @@ class Controller(SM):
         # this should be a functional state machine (lol) but the requirements
         # stated that there must be some state transitions. So here, have your
         # needless state.
-        print temp
-        print powers
         return powers, powers
 
 if __name__ == '__main__':
