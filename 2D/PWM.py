@@ -6,15 +6,18 @@ IO.setwarnings(False)
 # e.g. 19 for GPIO19 instead of 35 for PIN35 aka GPIO19
 IO.setmode(IO.BCM) 
 
+IO.setup(18, IO.OUT)
 
 class PWM(object):
     def __init__(self, channel):
-        io.setup(channel, IO.OUT)
+        IO.setup(channel, IO.OUT)
         self.pwm = IO.PWM(channel, 100)
         self.pwm.start(0)
 
     def set_power(self, power):
-        self.ChangeDutyCycle(power*100)
+        dc = int( power*100//1 )
+        self.pwm.ChangeDutyCycle(dc)
+        print 'power set to '+str(dc)
 
 class WaterPump(PWM):
     def __init__(self, channel):
