@@ -7,8 +7,9 @@ TEMP_FILENAME = ''
 
 class TempReader(object):
     def __init__(self, filename = TEMP_FILENAME):
-        self._init_sensor()
         self.filename = filename
+        
+        self._init_sensor()
 
     def next(self, interval = 0.2):
         lines = self.get_temp_lines()
@@ -31,4 +32,3 @@ class TempReader(object):
         f = open(self.filename, 'r')
         lines = list(f)
         f.close()
-
