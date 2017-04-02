@@ -3,12 +3,12 @@ from time import sleep
 
 from helpers import foreach
 
-TEMP_FILENAME = ''
+TEMP_PATH = ''
 
 class TempReader(object):
-    def __init__(self, filename = TEMP_FILENAME):
-        self.filename = filename
-        
+    def __init__(self, filepath = TEMP_PATH):
+        self.filepath = filepath
+
         self._init_sensor()
 
     def next(self, interval = 0.2):
@@ -29,6 +29,6 @@ class TempReader(object):
         foreach(system, sensor_init_readings_commands)
 
     def _get_temp_lines():
-        f = open(self.filename, 'r')
+        f = open(self.filepath, 'r')
         lines = list(f)
         f.close()
