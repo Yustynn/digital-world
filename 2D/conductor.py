@@ -18,8 +18,7 @@ WATER_PUMP_CHANNEL2 = 20 # @TODO change to real channel
 controller  = Controller(TARGET_TEMP)
 # fan         = Fan(FAN_CHANNEL)
 temp_reader = TempReader()
-water_pump1  = WaterPump(WATER_PUMP_CHANNEL1)
-water_pump2  = WaterPump(WATER_PUMP_CHANNEL2)
+water_pump  = WaterPump(WATER_PUMP_CHANNEL1, WATER_PUMP_CHANNEL2)
 
 # adopt ballet pose in preparation for musical enlightenment
 controller.start()
@@ -30,7 +29,7 @@ while 1:
    powers = controller.step(temp)
 
    # fan.set_power( powers.fan )
-   water_pump1.set_power( powers.water_pump )
+   water_pump.set_power( powers.water_pump )
 
    # pause to catch breath
    sleep(0.1)
