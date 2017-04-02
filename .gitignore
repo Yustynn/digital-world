@@ -1,2 +1,4 @@
 WK1/geckodriver.log
 **/*.swp
+**/*.swo
+**/*.pyc
