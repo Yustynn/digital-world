@@ -2,3 +2,5 @@ WK1/geckodriver.log
 **/*.swp
 **/*.swo
 **/*.pyc
+**/temp.bmp
+**/still.bmp
