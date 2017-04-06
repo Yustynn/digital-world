@@ -5,7 +5,7 @@ from time       import sleep
 
 from cv         import get_points
 from still      import download_still
-from utils       import EBotTracker, Point
+from utils      import EBotTracker, Point
 
 # general config
 SLEEP_TIME = 0.1
