@@ -18,7 +18,7 @@
     Label:
         halign: 'left'
         font_size: sp(12)
-        text: str(root.data)
+        text: str(root.data) + root.unit
 
 <DataDisplay@GridLayout>:
     rows: 3
@@ -27,16 +27,19 @@
         color: GREEN
         data: state.target_temp
         label: 'TARGET TEMPERATURE'
+        unit: '°C'
 
     DataDisplayRow:
         color: ORANGE
         data: state.temp
         label: 'CURRENT TEMPERATURE'
+        unit: '°C'
 
     DataDisplayRow:
         color: BLUE
-        data: state.power
-        label: 'POWER'
+        data: state.power*100
+        label: 'POWER (pump + fan)'
+        unit: '%'
 
 <PowerGraph, TemperatureGraph>:
     xlabel: 'time'
@@ -87,13 +90,14 @@
     Label:
         font_size: sp(24)
         size_hint_y: 0.2
-        text: str(slider.value)
+        text: '{}°C'.format(slider.value)
     Label:
         size_hint_y: 0.15
-        text: 'currently {}'.format(state.target_temp)
+        text: 'currently {}°C'.format(state.target_temp)
     Button:
         background_color: hex('83BCFE')
         background_normal: ''
+        color: 0,0,0,1
         on_press: state.set('target_temp', slider.value)
         text: 'SET'
 

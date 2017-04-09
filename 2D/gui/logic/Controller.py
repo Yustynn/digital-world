@@ -1,6 +1,5 @@
 from libdw.sm import SM
 from collections import namedtuple
-from TempReader import TempReader
 
 Powers = namedtuple('Powers', ['water_pump', 'fan'])
 
@@ -25,7 +24,7 @@ class Controller(SM):
     Powers(water_pump=1.0, fan=1.0)
     '''
 
-    def __init__(self, target_temp):
+    def __init__(self, target_temp=30.0):
         self.target_temp = target_temp
         self.startState = None
 
@@ -35,12 +34,7 @@ class Controller(SM):
         else:
             powers = Powers(0.0, 0.0)
 
-        # this should be a functional state machine (lol) but the requirements
-        # stated that there must be some state transitions. So here, have your
-        # needless state.
         return powers, powers
-
-controller = Controller(state.target_temp)
 
 if __name__ == '__main__':
     from doctest import testmod

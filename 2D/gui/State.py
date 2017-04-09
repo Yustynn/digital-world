@@ -1,20 +1,13 @@
 from kivy.uix.widget    import Widget
 from kivy.properties    import NumericProperty, ObjectProperty
 
-# other mods
-from collections        import namedtuple
-from functools          import update_wrapper
-from threading          import Thread
 from time               import time
 
 # self-created mods
 import logic.fb as fb
+from logic.helpers      import unblock
 
 # let's not slow our app down
-def unblock(fn):
-    t = Thread(target=fn)
-    t.daemon = True
-    t.start()
 
 # value vs time tracker for getting data points for graph
 class History(object):

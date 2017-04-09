@@ -16,9 +16,11 @@ from State              import state, unblock
 
 # other personal mods
 from colors             import BLUE, GREEN, ORANGE
-
+from logic.Controller   import Controller
 ### SETUP ###
 kivy.require('1.9.1') # could propably go even earlier, but just in case
+
+UPDATE_FREQ = 1.0/10
 
 # I made a central source of truth. Don't like how kivy handles state
 class RootWidget(Widget):
@@ -26,8 +28,9 @@ class RootWidget(Widget):
 
 class DataDisplayRow(BoxLayout):
     color = ListProperty(None)
-    data = NumericProperty(0)
+    data  = NumericProperty(0)
     label = StringProperty('')
+    unit  = StringProperty('')
 
 
 class TemperatureGraph(Graph):
@@ -44,7 +47,7 @@ class TemperatureGraph(Graph):
         self.add_plot(plot)
 
         self.target_temp_plot = plot
-        Clock.schedule_interval(self.update, 1./10)
+        Clock.schedule_interval(self.update, UPDATE_FREQ)
 
     def update(self, _):
         # refresh points, not sure why they don't just auto
@@ -83,6 +86,21 @@ class PowerGraph(Graph):
 
 
 class GUIApp(App):
+    def __init__(self, **kwargs):
+        App.__init__(self, **kwargs)
+
+        self.controller = Controller(state.target_temp)
+        self.controller.start()
+
+        Clock.schedule_interval(self.update, UPDATE_FREQ)
+
+    def update(self, _):
+        controller = self.controller
+        controller.target_temp = state.target_temp
+
+        power = controller.step(state.temp)[0]
+        state.set('power', power)
+
     build = lambda s: RootWidget()
 
 
