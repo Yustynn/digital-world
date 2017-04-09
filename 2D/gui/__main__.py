@@ -37,13 +37,21 @@ class TemperatureGraph(Graph):
         plot = LinePlot(color=ORANGE)
         plot.points = state.temp_history.points
         self.add_plot(plot)
+        self.temp_plot = plot
 
+        plot = LinePlot(color=GREEN)
+        plot.points = state.temp_history.points
+        self.add_plot(plot)
 
-        self.plot = plot
+        self.target_temp_plot = plot
         Clock.schedule_interval(self.update, 1./10)
 
     def update(self, _):
-        points = self.plot.points = state.temp_history.points
+        # refresh points, not sure why they don't just auto
+        # update. Possibly being shallow copied?
+        points = self.temp_plot.points = state.temp_history.points
+        self.target_temp_plot.points = state.target_temp_history.points
+
         xs = [point[0] for point in points]
 
         self.xmin, self.xmax = min(xs), max(xs)

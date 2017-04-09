@@ -45,22 +45,25 @@ class State(Widget):
 
         self.power_history = History([(0, self.power)])
         self.temp_history = History([(0, self.temp)])
+        self.target_temp_history = History([(0, self.target_temp)])
 
         # non-blocking update logic
         unblock(self.update)
 
-    # errors sometimes due to HTTP failures
     def update(self):
+
+        # errors sometimes due to HTTP failures
         try:
             # get latest temp
             self.temp = fb.get('temp')
 
-            # track both temp and power
-            self.temp_history.track(self.temp)
-            self.power_history.track(self.power)
-
         except Exception, e:
             print 'Failed to retrieve temperature', e
+
+        # track everything
+        self.power_history.track(self.power)
+        self.target_temp_history.track(self.target_temp)
+        self.temp_history.track(self.temp)
 
         self.update()
 

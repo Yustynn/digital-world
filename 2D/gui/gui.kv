@@ -7,12 +7,17 @@
 #:import ORANGE colors.ORANGE
 
 <DataDisplayRow@BoxLayout>:
+    pos: (100, 100)
+    size: 400, 15
+    size_hint: None, None
     Label:
         halign: 'left'
         color: root.color
+        font_size: sp(12)
         text: root.label
     Label:
         halign: 'left'
+        font_size: sp(12)
         text: str(root.data)
 
 <DataDisplay@GridLayout>:
@@ -33,14 +38,16 @@
         data: state.power
         label: 'POWER'
 
-
 <PowerGraph, TemperatureGraph>:
     xlabel: 'time'
+    padding: 0
+    size_hint_x: 0.9
+    size_hint_y: 1
 
 <PowerGraph>
     ylabel: 'power'
-    ymin: -3
-    ymax: 103
+    ymin: -0.03
+    ymax: 1.03
 
 <TemperatureGraph>
     ylabel: 'temperature'
@@ -78,6 +85,7 @@
         value: 30.0
 
     Label:
+        font_size: sp(24)
         size_hint_y: 0.2
         text: str(slider.value)
     Label:
@@ -91,8 +99,11 @@
 
         size_hint_y: 0.3
 
-<Content@BoxLayout>:
+<MainContent@BoxLayout>:
     orientation: 'vertical'
+    padding: sp(10)
+    spacing: sp(10)
+
     canvas.before:
         Color:
             rgb: hex('#282828')
@@ -101,10 +112,13 @@
             size: self.size
 
     BoxLayout:
+        size_hint: 1, None
+        height: 50
+        pos: 0,0
         Image:
             source: './assets/logo.png'
-            size_hint_x: None
-            width: sp(200)
+            size_hint_y: None
+            height: 50
         DataDisplay
 
     TemperatureGraph
@@ -115,6 +129,5 @@
         cols: 2
         size: root.size
 
-        Content
-
+        MainContent
         Sidebar
