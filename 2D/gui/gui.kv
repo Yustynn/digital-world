@@ -1,0 +1,31 @@
+#:import hex kivy.utils.get_color_from_hex
+
+<IdealTempSlider>
+    Slider:
+        id: slider
+        orientation: 'vertical'
+        background_width: sp(90)
+        cursor_height: sp(60)
+        range: 290, 310
+        step: 0.1
+        value: 300
+        value_track: True
+    Label:
+        text: str(slider.value)
+
+
+<Layout>:
+    cols: 2
+    rows: 3
+    canvas.before:
+        Color: 
+            rgb: hex('#404040')
+        Rectangle:
+            pos: self.pos
+            size: self.size
+    Image:
+        source: './logo.png'
+    Label:
+        text: ''
+    IdealTempSlider:
+        text: 'hi' 
