@@ -2,35 +2,63 @@
 
 #:import hex kivy.utils.get_color_from_hex
 #:import state State.state
+#:import BLUE colors.BLUE
+#:import GREEN colors.GREEN
+#:import ORANGE colors.ORANGE
 
-<TemperatureGraph>:
-    Graph:
-        xlabel: 'time'
-        ylabel: 'temperature'
+<DataDisplayRow@BoxLayout>:
+    Label:
+        halign: 'left'
+        color: root.color
+        text: root.label
+    Label:
+        halign: 'left'
+        text: str(root.data)
 
-        x_grid: True
-        y_grid: True
+<DataDisplay@GridLayout>:
+    rows: 3
 
-        x_ticks_minor: 25
-        x_ticks_major: 1
-        y_ticks_minor: 25
-        y_ticks_major: 1
+    DataDisplayRow:
+        color: GREEN
+        data: state.target_temp
+        label: 'TARGET TEMPERATURE'
 
-        padding: 5
+    DataDisplayRow:
+        color: ORANGE
+        data: state.temp
+        label: 'CURRENT TEMPERATURE'
 
-        ymin: -1
-        ymax: 1
+    DataDisplayRow:
+        color: BLUE
+        data: state.power
+        label: 'POWER'
 
-        xmin: -0
-        ymin: 100
+
+<PowerGraph, TemperatureGraph>:
+    xlabel: 'time'
+
+<PowerGraph>
+    ylabel: 'power'
+    ymin: -3
+    ymax: 103
+
+<TemperatureGraph>
+    ylabel: 'temperature'
+    ymin: 22
+    ymax: 37
 
 <Label>:
     font_name: './assets/RobotoMono-Regular'
+    halign: 'center'
+    valign: 'middle'
+    text_size: self.size
 
 <Sidebar@BoxLayout>:
     state: state
 
     orientation: 'vertical'
+    size_hint_x: 0.3
+
     canvas.before:
         Color:
             rgb: hex('#3D3D3D')
@@ -38,20 +66,30 @@
             pos: self.pos
             size: self.size
     Label:
-        text: 'Change Ideal Temperature'
+        text: 'Change Target Temperature'
+
+        size_hint_y: 0.3
+
     Slider:
         id: slider
         orientation: 'vertical'
         range: 25, 35
         step: 0.1
         value: 30.0
+
     Label:
+        size_hint_y: 0.2
         text: str(slider.value)
     Label:
-        text: 'currently {}'.format(state.ideal_temp)
+        size_hint_y: 0.15
+        text: 'currently {}'.format(state.target_temp)
     Button:
+        background_color: hex('83BCFE')
+        background_normal: ''
+        on_press: state.set('target_temp', slider.value)
         text: 'SET'
-        on_press: state.set('ideal_temp', slider.value)
+
+        size_hint_y: 0.3
 
 <Content@BoxLayout>:
     orientation: 'vertical'
@@ -65,10 +103,12 @@
     BoxLayout:
         Image:
             source: './assets/logo.png'
-        TemperatureGraph
+            size_hint_x: None
+            width: sp(200)
+        DataDisplay
 
-    Button:
-        text: str(state.temp)
+    TemperatureGraph
+    PowerGraph
 
 <RootWidget>:
     GridLayout:

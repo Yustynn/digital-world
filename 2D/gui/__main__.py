@@ -3,40 +3,75 @@ import kivy
 
 from kivy.app           import App
 from kivy.clock         import Clock
-from kivy.properties    import ObjectProperty
+from kivy.properties    import ListProperty, ObjectProperty, NumericProperty, StringProperty
+from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.label     import Label
 from kivy.uix.widget    import Widget
 
-from State import state
+# kivy community mods
+from kivy.garden.graph  import Graph, LinePlot
 
+# personal kivy mods
+from State              import state, unblock
 
-from math import sin
-from kivy.garden.graph import Graph, MeshLinePlot
+# other personal mods
+from colors             import BLUE, GREEN, ORANGE
 
 ### SETUP ###
 kivy.require('1.9.1') # could propably go even earlier, but just in case
 
+# I made a central source of truth. Don't like how kivy handles state
 class RootWidget(Widget):
     state = ObjectProperty(state)
 
-class CurrentData(Widget):
-    pass
+class DataDisplayRow(BoxLayout):
+    color = ListProperty(None)
+    data = NumericProperty(0)
+    label = StringProperty('')
 
-class TemperatureGraph(Widget):
-    # graph = Graph(xlabel='X', ylabel='Y', x_ticks_minor=5,
-    # x_ticks_major=25, y_ticks_major=1,
-    # y_grid_label=True, x_grid_label=True, padding=5,
-    # x_grid=True, y_grid=True, xmin=-0, xmax=100, ymin=-1, ymax=1)
-    # plot = MeshLinePlot(color=[1, 0, 0, 1])
-    # plot.points = [(x, sin(x / 10.)) for x in range(0, 101)]
-    # graph.add_plot(plot)
-    # root.add_widget(graph)
-    # def __init__(self):
-    #     super(TemperatureGraph, self).__init__()
-    #     plot = MeshLinePlot(color=[1, 0, 0, 1])
-    #     plot.points = [(x, sin(x / 10.)) for x in range(0, 101)]
-    #     self.add_plot(plot)
-    pass
 
+class TemperatureGraph(Graph):
+    def __init__(self, **kwargs):
+        super(TemperatureGraph, self).__init__(**kwargs)
+
+        plot = LinePlot(color=ORANGE)
+        plot.points = state.temp_history.points
+        self.add_plot(plot)
+
+
+        self.plot = plot
+        Clock.schedule_interval(self.update, 1./10)
+
+    def update(self, _):
+        points = self.plot.points = state.temp_history.points
+        xs = [point[0] for point in points]
+
+        self.xmin, self.xmax = min(xs), max(xs)
+
+        if not self.xmin - self.xmax: # avoid pesky div by 0 errors
+            self.xmax += 0.1
+
+
+# I did a bad thing and copy pasted. Will figure out how to DRY later (hopefully)
+class PowerGraph(Graph):
+    def __init__(self, **kwargs):
+        super(PowerGraph, self).__init__(**kwargs)
+
+        plot = LinePlot(color=BLUE)
+        plot.points = state.power_history.points
+        self.add_plot(plot)
+
+        self.plot = plot
+        Clock.schedule_interval(self.update, 1./10)
+
+    def update(self, _):
+        points = self.plot.points = state.power_history.points
+        xs = [point[0] for point in points]
+
+        self.xmin, self.xmax = min(xs), max(xs)
+
+        if not self.xmin - self.xmax: # avoid pesky div by 0 errors
+            self.xmax += 0.1
 
 
 class GUIApp(App):

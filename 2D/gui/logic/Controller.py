@@ -40,6 +40,8 @@ class Controller(SM):
         # needless state.
         return powers, powers
 
+controller = Controller(state.target_temp)
+
 if __name__ == '__main__':
     from doctest import testmod
     testmod()
