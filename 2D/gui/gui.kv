@@ -4,13 +4,12 @@
 #:import state State.state
 
 <Label>:
-    font_name: 'RobotoMono-Regular'
+    font_name: './assets/RobotoMono-Regular'
 
 <RootWidget>:
     GridLayout:
         cols: 2
         size: root.size
-        state: state
 
         BoxLayout:
             orientation: 'vertical'
@@ -23,7 +22,7 @@
 
             BoxLayout:
                 Image:
-                    source: './logo.png'
+                    source: './assets/logo.png'
                 CurrentData:
 
             Button:
