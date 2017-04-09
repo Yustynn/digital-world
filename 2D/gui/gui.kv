@@ -1,31 +1,38 @@
+#:kivy 1.9.1
+
 #:import hex kivy.utils.get_color_from_hex
 
-<IdealTempSlider>
-    Slider:
-        id: slider
-        orientation: 'vertical'
-        background_width: sp(90)
-        cursor_height: sp(60)
-        range: 290, 310
-        step: 0.1
-        value: 300
-        value_track: True
-    Label:
-        text: str(slider.value)
+<Label>:
+    font_name: 'RobotoMono-Regular'
 
+<RootWidget>:
+    GridLayout:
+        cols: 2
+        size: root.size
 
-<Layout>:
-    cols: 2
-    rows: 3
-    canvas.before:
-        Color: 
-            rgb: hex('#404040')
-        Rectangle:
-            pos: self.pos
-            size: self.size
-    Image:
-        source: './logo.png'
-    Label:
-        text: ''
-    IdealTempSlider:
-        text: 'hi' 
+        BoxLayout:
+            orientation: 'vertical'
+
+            BoxLayout:
+                Image:
+                    source: './logo.png'
+                CurrentData:
+
+            Button:
+                text: 'lol'
+        
+        BoxLayout:
+            orientation: 'vertical'
+
+            Label:
+                text: 'Change Ideal Temperature'
+            Slider:
+                id: slider
+                orientation: 'vertical'
+                range: 25, 35
+                step: 0.1
+                value: 30.0
+            Label:
+                text: str(slider.value)
+            Button:
+                text: 'SET'
