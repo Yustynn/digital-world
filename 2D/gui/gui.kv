@@ -1,6 +1,7 @@
 #:kivy 1.9.1
 
 #:import hex kivy.utils.get_color_from_hex
+#:import state State.state
 
 <Label>:
     font_name: 'RobotoMono-Regular'
@@ -9,9 +10,16 @@
     GridLayout:
         cols: 2
         size: root.size
+        state: state
 
         BoxLayout:
             orientation: 'vertical'
+            canvas.before:
+                Color:
+                    rgb: hex('#282828')
+                Rectangle:
+                    pos: self.pos
+                    size: self.size
 
             BoxLayout:
                 Image:
@@ -19,11 +27,17 @@
                 CurrentData:
 
             Button:
-                text: 'lol'
-        
+                text: str(state.temp)
+
         BoxLayout:
             orientation: 'vertical'
-
+            width: root.width / 5
+            canvas.before:
+                Color:
+                    rgb: hex('#3D3D3D')
+                Rectangle:
+                    pos: self.pos
+                    size: self.size
             Label:
                 text: 'Change Ideal Temperature'
             Slider:
@@ -34,5 +48,8 @@
                 value: 30.0
             Label:
                 text: str(slider.value)
+            Label:
+                text: 'currently {}'.format(state.ideal_temp)
             Button:
                 text: 'SET'
+                on_press: state.set('ideal_temp', slider.value)

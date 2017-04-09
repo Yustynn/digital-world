@@ -1,26 +1,16 @@
+# kivy mods
 import kivy
 
 from kivy.app           import App
 from kivy.clock         import Clock
-from kivy.properties    import NumericProperty   
+from kivy.properties    import ObjectProperty
 from kivy.uix.widget    import Widget
 
-#from logic.fb import get_temp
-
-kivy.require('1.9.1')
+### SETUP ###
+kivy.require('1.9.1') # could propably go even earlier, but just in case
 
 class RootWidget(Widget):
-    def __init__(self):
-        super(RootWidget, self).__init__()
-
-        self.ideal_temp = 30.0
-        self.power      = 0
-        self.temp       = NumericProperty(30.0)
-
-
-    def update(self):
-        self.temp = get_temp()
-#        self.update()
+    state = ObjectProperty(None)
 
 class CurrentData(Widget):
     pass
