@@ -19,6 +19,7 @@ class State(Widget):
     # power      = NumericProperty(fb.get('power'))
     # temp       = NumericProperty(fb.get('temperature'))
 
+    # For testing, so the app starts off quick without having to wait for HTTP responses
     ideal_temp = NumericProperty(0.0)
     power      = NumericProperty(0.0)
     temp       = NumericProperty(0.0)
@@ -30,7 +31,11 @@ class State(Widget):
         unblock(self.update)
 
     def update(self):
-        self.temp = fb.get('temperature')
+        try:
+            self.temp = fb.get('temperature')
+        except Exception, e:
+            print 'Failed to retrieve temperature', e
+
         self.update()
 
     def set(self, key, val):

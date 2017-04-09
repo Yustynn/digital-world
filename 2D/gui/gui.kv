@@ -3,52 +3,78 @@
 #:import hex kivy.utils.get_color_from_hex
 #:import state State.state
 
+<TemperatureGraph>:
+    Graph:
+        xlabel: 'time'
+        ylabel: 'temperature'
+
+        x_grid: True
+        y_grid: True
+
+        x_ticks_minor: 25
+        x_ticks_major: 1
+        y_ticks_minor: 25
+        y_ticks_major: 1
+
+        padding: 5
+
+        ymin: -1
+        ymax: 1
+
+        xmin: -0
+        ymin: 100
+
 <Label>:
     font_name: './assets/RobotoMono-Regular'
+
+<Sidebar@BoxLayout>:
+    state: state
+
+    orientation: 'vertical'
+    canvas.before:
+        Color:
+            rgb: hex('#3D3D3D')
+        Rectangle:
+            pos: self.pos
+            size: self.size
+    Label:
+        text: 'Change Ideal Temperature'
+    Slider:
+        id: slider
+        orientation: 'vertical'
+        range: 25, 35
+        step: 0.1
+        value: 30.0
+    Label:
+        text: str(slider.value)
+    Label:
+        text: 'currently {}'.format(state.ideal_temp)
+    Button:
+        text: 'SET'
+        on_press: state.set('ideal_temp', slider.value)
+
+<Content@BoxLayout>:
+    orientation: 'vertical'
+    canvas.before:
+        Color:
+            rgb: hex('#282828')
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
+    BoxLayout:
+        Image:
+            source: './assets/logo.png'
+        TemperatureGraph
+
+    Button:
+        text: str(state.temp)
 
 <RootWidget>:
     GridLayout:
         cols: 2
         size: root.size
 
-        BoxLayout:
-            orientation: 'vertical'
-            canvas.before:
-                Color:
-                    rgb: hex('#282828')
-                Rectangle:
-                    pos: self.pos
-                    size: self.size
+        Content
 
-            BoxLayout:
-                Image:
-                    source: './assets/logo.png'
-                CurrentData:
-
-            Button:
-                text: str(state.temp)
-
-        BoxLayout:
-            orientation: 'vertical'
-            width: root.width / 5
-            canvas.before:
-                Color:
-                    rgb: hex('#3D3D3D')
-                Rectangle:
-                    pos: self.pos
-                    size: self.size
-            Label:
-                text: 'Change Ideal Temperature'
-            Slider:
-                id: slider
-                orientation: 'vertical'
-                range: 25, 35
-                step: 0.1
-                value: 30.0
-            Label:
-                text: str(slider.value)
-            Label:
-                text: 'currently {}'.format(state.ideal_temp)
-            Button:
-                text: 'SET'
-                on_press: state.set('ideal_temp', slider.value)
+        Sidebar

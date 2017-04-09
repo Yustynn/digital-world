@@ -6,8 +6,5 @@ URL    = env['T3_2D_DB_URL']
 SECRET = env['T3_2D_DB_SECRET']
 fb = firebase.FirebaseApplication(URL, SECRET)
 
-
-make_setter = lambda k: lambda v: fb.put('/', k, v)
-
-get = lambda key:      float( fb.get('/'+key) )
+get = lambda key: float( fb.get('/'+key) )
 set = lambda key, val: fb.put('/', key, val)
