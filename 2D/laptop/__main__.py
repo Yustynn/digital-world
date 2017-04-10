@@ -1,3 +1,8 @@
+# set up environment variables
+import os
+if os.path.isfile('./setup.py'):
+    import setup
+
 # kivy mods
 import kivy
 
@@ -7,6 +12,7 @@ from kivy.properties    import ListProperty, ObjectProperty, NumericProperty, St
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.widget    import Widget
 
+
 # personal kivy mods
 from State              import state, unblock
 from graphs             import PowerGraph, TemperatureGraph
@@ -14,6 +20,7 @@ from graphs             import PowerGraph, TemperatureGraph
 # other personal mods
 from constants          import SIM_MODE, UPDATE_INTERVAL
 from logic.Controller   import Controller
+
 
 ### SETUP ###
 kivy.require('1.9.1') # could propably go even earlier, but just in case

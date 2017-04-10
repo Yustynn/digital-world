@@ -1,3 +1,8 @@
+# set up environment variables
+import os
+if os.path.isfile('./setup.py'):
+    import setup
+
 import fb
 
 from TempReader import TempReader
