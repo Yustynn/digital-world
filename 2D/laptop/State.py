@@ -45,20 +45,20 @@ class State(Widget):
 
     def update(self):
 
-        # errors sometimes due to HTTP failures
-        try:
-            # get latest temp
-            self.temp = fb.get('temp')
+        while 1:
+            # errors sometimes due to HTTP failures
+            try:
+                # get latest temp
+                self.temp = fb.get('temp')
 
-        except Exception, e:
-            print 'Failed to retrieve temperature', e
+            except Exception, e:
+                print 'Failed to retrieve temperature', e
 
-        # track everything
-        self.power_history.track(self.power)
-        self.target_temp_history.track(self.target_temp)
-        self.temp_history.track(self.temp)
+            # track everything
+            self.power_history.track(self.power)
+            self.target_temp_history.track(self.target_temp)
+            self.temp_history.track(self.temp)
 
-        self.update()
 
     def set(self, key, val):
         # let's avoid drunken behaviour

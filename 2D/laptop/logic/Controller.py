@@ -28,6 +28,9 @@ class Controller(SM):
         power = k1*err + k2*prev_err
         power = norm(power, 1.0)
 
+        if power < 0:
+            power = 0
+
         self.prev_err = err
 
         return None, Powers(power, power)
