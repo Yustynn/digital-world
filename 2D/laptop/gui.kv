@@ -27,7 +27,7 @@
     Label:
         halign: 'left'
         font_size: sp(12)
-        text: str(root.data) + root.unit
+        text: '{:.2f}{}'.format(root.data, root.unit)
 
 <DataDisplay@GridLayout>:
     rows: 3

@@ -25,14 +25,14 @@ class History(object):
             self.points.pop(0)
 
 class State(Widget):
-    # target_temp = NumericProperty(fb.get('target_temp'))
-    # power       = NumericProperty(fb.get('power'))
-    # temp        = NumericProperty(fb.get('temp'))
+    target_temp = NumericProperty(fb.get('target_temp'))
+    power       = NumericProperty(fb.get('power'))
+    temp        = NumericProperty(fb.get('temp'))
 
     # # For testing, so the app starts off quick without having to wait for HTTP responses
-    target_temp = NumericProperty(0.0)
-    power       = NumericProperty(0.0)
-    temp        = NumericProperty(0.0)
+    # target_temp = NumericProperty(0.0)
+    # power       = NumericProperty(0.0)
+    # temp        = NumericProperty(0.0)
 
     sur_temp    = NumericProperty(0.0)
     wind_vel    = NumericProperty(0.0)
