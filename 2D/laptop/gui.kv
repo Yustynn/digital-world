@@ -6,6 +6,15 @@
 #:import GREEN colors.GREEN
 #:import ORANGE colors.ORANGE
 
+<SimDataDisplay@BoxLayout>:
+    height: 30
+    size_hint_y: None
+
+    Label
+        text: 'Surrounding Temperature: {}°C'.format(state.sur_temp)
+    Label
+        text: 'Wind Speed: {}m/s'.format(state.wind_vel)
+
 <DataDisplayRow@BoxLayout>:
     pos: (100, 100)
     size: 400, 15
@@ -104,6 +113,7 @@
         size_hint_y: 0.3
 
 <MainContent@BoxLayout>:
+    id: main_content
     orientation: 'vertical'
     padding: sp(10)
     spacing: sp(10)

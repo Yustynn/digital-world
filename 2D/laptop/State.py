@@ -34,6 +34,9 @@ class State(Widget):
     power       = NumericProperty(0.0)
     temp        = NumericProperty(0.0)
 
+    sur_temp    = NumericProperty(0.0)
+    wind_vel    = NumericProperty(0.0)
+
     def __init__(self, sim_mode = SIM_MODE):
         Widget.__init__(self)
 
@@ -44,18 +47,20 @@ class State(Widget):
         self.sim_mode = sim_mode
 
         if self.sim_mode:
-            from simulation.__main__ import bottle, start
-            self.bottle = bottle
+            from simulation.__main__ import bottle, start, env_conds
+            self.bottle    = bottle
+            self.env_conds = env_conds
             unblock(start)
 
         # non-blocking update logic
         unblock(self.update)
 
     def update(self):
-
         while 1:
             if self.sim_mode:
-                self.temp = self.bottle.temp - 273.15
+                self.temp     = self.bottle.temp - 273.15
+                self.sur_temp = self.env_conds.temp - 273.15
+                self.wind_vel = self.env_conds.wind_vel
                 sleep(UPDATE_INTERVAL * 10)
 
             else:

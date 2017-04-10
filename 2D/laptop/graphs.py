@@ -35,7 +35,6 @@ class TemperatureGraph(Graph):
         if not self.xmin - self.xmax: # avoid pesky div by 0 errors
             self.xmax += 0.1
 
-
 # I did a bad thing and copy pasted. Will figure out how to DRY later (hopefully)
 class PowerGraph(Graph):
     def __init__(self, **kwargs):

@@ -2,7 +2,7 @@ from kivy.utils import get_color_from_hex as hex
 
 
 # config
-SIM_MODE    = True
+SIM_MODE        = True 
 UPDATE_INTERVAL = 1.0/60
 
 # colors
