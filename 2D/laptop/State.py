@@ -1,11 +1,12 @@
 from kivy.uix.widget    import Widget
 from kivy.properties    import NumericProperty, ObjectProperty
 
-from time               import time
+from time               import sleep, time
 
 # self-created mods
 import logic.fb as fb
 from logic.helpers      import unblock
+from constants          import SIM_MODE, UPDATE_INTERVAL
 
 # let's not slow our app down
 
@@ -33,12 +34,19 @@ class State(Widget):
     power       = NumericProperty(0.0)
     temp        = NumericProperty(0.0)
 
-    def __init__(self):
+    def __init__(self, sim_mode = SIM_MODE):
         Widget.__init__(self)
 
         self.power_history = History([(0, self.power)])
         self.temp_history = History([(0, self.temp)])
         self.target_temp_history = History([(0, self.target_temp)])
+
+        self.sim_mode = sim_mode
+
+        if self.sim_mode:
+            from simulation.__main__ import bottle, start
+            self.bottle = bottle
+            unblock(start)
 
         # non-blocking update logic
         unblock(self.update)
@@ -46,13 +54,18 @@ class State(Widget):
     def update(self):
 
         while 1:
-            # errors sometimes due to HTTP failures
-            try:
-                # get latest temp
-                self.temp = fb.get('temp')
+            if self.sim_mode:
+                self.temp = self.bottle.temp - 273.15
+                sleep(UPDATE_INTERVAL * 10)
 
-            except Exception, e:
-                print 'Failed to retrieve temperature', e
+            else:
+                # errors sometimes due to HTTP failures
+                try:
+                    # get latest temp
+                    self.temp = fb.get('temp')
+
+                except Exception, e:
+                    print 'Failed to retrieve temperature', e
 
             # track everything
             self.power_history.track(self.power)
@@ -66,6 +79,8 @@ class State(Widget):
             raise NameError('No property called {} in state'.format(key))
 
         setattr(self, key, val) # optimism
-        unblock( lambda: fb.set(key, val) )
+
+        if not self.sim_mode:
+            unblock( lambda: fb.set(key, val) )
 
 state = State()

@@ -3,7 +3,7 @@ import requests
 from os         import environ
 from time       import sleep
 
-from helpers    import unblock
+from helpers    import blue, unblock
 
 API_KEY  = environ['DATA_GOV_API_KEY']
 WIND_URL = 'https://api.data.gov.sg/v1/environment/wind-speed'
@@ -31,10 +31,13 @@ class EnvConditions(object):
     def update(self):
         while 1:
             try:
+                print 'hi'
                 self.temp     = self.get_temp()
                 self.wind_vel = self.get_wind_vel()
+
+                print 'huh'
+                print blue( 'Temperature: {}C, Wind Velocity: {}m/s'.format(self.temp, self.wind_vel) ) 
             except:
                 print 'Failed to retrieve temperature / wind velocity'
 
             sleep(self.update_interval)
-

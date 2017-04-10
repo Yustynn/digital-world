@@ -25,7 +25,7 @@ from datetime       import datetime
 
 from EnvConditions  import EnvConditions
 
-env_conds = EnvConditions()
+env_conds = EnvConditions(60)
 
 # Helpers to more semantically express time in seconds
 mins  = lambda m: m*60
@@ -88,12 +88,12 @@ class Bottle(object):
     @property
     def temp(self):
         return self.heat_to_temp(self.heat.level)
-        
+
     def heat_to_temp(self, heat):
-        return heat / (ALGAE_MASS * ALGAE_C) 
+        return heat / (ALGAE_MASS * ALGAE_C)
 
     def temp_to_heat(self, temp):
-        return temp * (ALGAE_MASS * ALGAE_C) 
+        return temp * (ALGAE_MASS * ALGAE_C)
 
     def convection(self, h, A, T_sur):
         delta_T = self.temp - T_sur
@@ -113,14 +113,14 @@ class Bottle(object):
         print 'Conduction removing {} at {}'.format(delta_Q, datetime.now())
 
         return self.heat.add(delta_Q)
-        
+
 def sun(env, bottle):
     yield bottle.heat.add(RAD_SUN)
 
 def surr_air(env, bottle, env_conds):
     T_sur = env_conds.temp
     v     = env_conds.wind_vel
-    
+
     # using Watmuff's amendment to Jurges' eqn
     # source: https://c.ymcdn.com/sites/www.saimeche.org.za/resource/collection/A9416D0D-99A6-4534-B5C5-15E8475524FE/Kr_ger-2002_01__600_dpi_-_2002__18_3___49-54.pdf
     h = 2.8 + 3*v
@@ -141,6 +141,7 @@ def water(env, bottle):
 
 def composer(env, bottle):
     while 1:
+        # only take sun radiation between 7am and 7pm
         if 7 <= datetime.now().hour <= 19:
             env.process(sun(env, bottle))
         env.process(surr_air(env, bottle, env_conds))
@@ -150,4 +151,9 @@ def composer(env, bottle):
 
 bottle = Bottle()
 env.process( composer(env, bottle) )
-env.run(until=SIM_TIME)
+
+def start():
+    env.run(until=SIM_TIME)
+
+if __name__ == '__main__':
+    start()
