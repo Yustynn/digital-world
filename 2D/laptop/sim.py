@@ -10,8 +10,6 @@ One requirement was to distinguish between processes that increase system
 temperature and those which decrease it. To that end:
 - INCREASE due to radiation from SUN
 - DECREASE due to convection with water cooling
-- INDETERMINATE due to conduction between bottle and ground (ground hotter
-    -> increase)
 - INDETERMINATE due to convection between bottle and surrounding air (air
     hotter -> increase)
 
@@ -20,26 +18,39 @@ Some of our assumptions:
 - the cooling water does not lose heat as it flows through the algae water
 '''
 
+# simpy mods / python core mods
 from simpy                  import Container
 from simpy.rt               import RealtimeEnvironment
 from time                   import sleep, strftime
 from datetime               import datetime
 
-from sim_scripts.SimState           import SimState
-from sim_scripts.helpers            import celc, hours, mins # unit converters
+# custom mods
+from sim_scripts.SimState   import SimState
+from sim_scripts.helpers    import celc, hours, mins # unit converters
+from sim_scripts.helpers    import red, green, blue  # string colorizers
 
 import sim_scripts.delta_Qs          as delta_Qs
 import sim_scripts.physics_constants as p
 
 # Simpy Config
-SIM_TIME         = hours(24)             # seconds
-INIT_BOTTLE_TEMP = celc(35)              # (K) system init temp
+IS_LOG_ON        = True                  # Print useful informaion every iteration
+IS_FAST_MODE     = False                 # Use non real-time environment
+SIM_TIME         = hours(24)             # (s)
 
-def logger(process_name, delta_Q, bottle):
-    time = strftime('%r')
+def logger(process_name, delta_Q, bottle, colorizer=None):
+    if IS_LOG_ON:
+        time = strftime('%r')
+        text = '{}: {:15} -> {:5.2f}J change in heat -> {:.2f}J, {:.2f}K'.format(\
+            time, process_name, delta_Q, bottle.heat.level, bottle.temp)
 
-    print '{}: {} -> {:.2f}J change in heat -> {:.2f}J, {:.2f}K'.format(\
-        time, process_name, delta_Q, bottle.heat.level, bottle.temp)
+        if colorizer:
+            text = colorizer(text)
+        print text
+
+def print_results(bottle):
+    print '\n\nSIMULATION END'
+    print 'Time: {}s\nTemperature: {:.2f}\nHeat: {:.2f}\n\n'.format(\
+        SIM_TIME, bottle.temp, bottle.heat.level)
 
 class HeatContainer(Container):
     def init(self, **kwargs):
@@ -56,7 +67,7 @@ class HeatContainer(Container):
         return self.get(-amt)
 
 class Bottle(object):
-    def __init__(self, env, init_temp=INIT_BOTTLE_TEMP):
+    def __init__(self, env, init_temp=p.INIT_BOTTLE_TEMP):
         heat_amt = init_temp * p.C_WATER * p.M_ALGAE
         self.heat = HeatContainer(env, init=heat_amt)
 
@@ -64,64 +75,60 @@ class Bottle(object):
     def temp(self):
         return self.heat.level / (p.C_WATER * p.M_ALGAE)
 
+### HEAT TRANSFER PROCESSES (not simpy processes) ###
 def sun(bottle, sim_state):
-
     # delta_Q = delta_Qs.sun(sim_state.solar_irradiance)
-    delta_Q = delta_Qs.sun(800) # for testing @TODO remove
+    delta_Q = delta_Qs.sun(200) # for testing @TODO remove
 
-    logger('sun', delta_Q, bottle)
+    logger('sun', delta_Q, bottle, red)
 
     yield bottle.heat.delta(delta_Q)
 
 def cooling(bottle, sim_state):
-    # delta_Q = delta_Qs.cooling(sim_state.power)
-    delta_Q = delta_Qs.cooling(1) # for testing, use max power @TODO remove
+    delta_Q = delta_Qs.cooling(sim_state.power)
 
-    print '\n\n\nPOWER: {}'.format(sim_state.power)
-
-    logger('cooling system', delta_Q, bottle)
+    logger('cooling system', delta_Q, bottle, blue)
 
     yield bottle.heat.delta(delta_Q)
 
 def surroundings(bottle, sim_state):
     delta_Q = delta_Qs.surroundings(bottle.temp, sim_state.temp)
 
-    logger('surroundings', delta_Q, bottle)
+    logger('surroundings', delta_Q, bottle, green)
 
     yield bottle.heat.delta(delta_Q)
 
-def print_results(bottle):
-    print '\n\nSIMULATION END'
-    print 'Time: {}s\nTemperature: {:.2f}\nHeat: {:.2f}\n\n'.format(\
-        SIM_TIME, bottle.temp, bottle.heat.level)
-
-
-def composer(env, bottle, sim_state):
+### DEFINE PROCESSES ###
+# runs all heat-processes once per second
+def conductor(env, bottle, sim_state):
     while True:
         env.process( cooling(bottle, sim_state) )
         env.process( surroundings(bottle, sim_state) )
-        if 7 <= datetime.now().hour <= 19:
+        if 1 <= datetime.now().hour <= 19:
             env.process( sun(bottle, sim_state) )
 
-        print 'Runtime: {}s \n'.format(env.now)
+        if IS_LOG_ON:
+            print '{:^75}'.format( 'SIMTIME: {}s \n'.format(env.now) )
 
         if env.now == SIM_TIME - 1:
             print_results(bottle)
 
         yield env.timeout(1)
 
-env = RealtimeEnvironment(strict=False)
+### CONFIG SIM ###
+if IS_FAST_MODE:
+    from simpy import Environment
+    env = Environment()
+else:
+    env = RealtimeEnvironment(strict=False)
+
 sim_state = SimState()
-
-# ## FOR TESTING ##
-# from simpy import Environment
-# env = Environment()
-# SIM_TIME = hours(5)
-
 bottle = Bottle(env)
 
-env.process( composer(env, bottle, sim_state) )
+### REGISTER ALL PROCESSES ###
+env.process( conductor(env, bottle, sim_state) )
 
+# If running from GUI, we want to start the sim in a different thread
 def start():
     env.run(until=SIM_TIME)
 

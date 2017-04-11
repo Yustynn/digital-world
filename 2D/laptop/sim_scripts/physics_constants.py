@@ -1,21 +1,13 @@
 from helpers import celc
 
-C_WATER = 4.184 # J/gK
-M_ALGAE = 40.0    # g
-SA_ALGAE = {    # m^2
-    'sun': 0.005524,
-    'ground': 0.001275,
+INIT_BOTTLE_TEMP = celc(35)              # (K) system init temp
+M_ALGAE = 40.0                           # (g) mass
+LAMBDA_ALGAE = 0.055787                  # (W/m^2) surroundings-a]gae transfer
+SA_ALGAE = {
+    'sun': 0.005524,                     # (m^2) surface area exposed to sun
+    'ground': 0.001275,                  # (m^2) surface area exposed to ground
 }
 
-LAMBDA_ALGAE = 0.055787 # surroundings-a]gae (W/m^2)
-MAX_FLOW_RATE = 0.8 # of cooling water in pipe (g/s)
-# MAX_FLOW_RATE = 400 # of cooling water in pipe (g/s)
-T_RESERVOIR = celc(25.0) # cooling water reservoir temp (K)
-#
-# 5 degrees c in 4 mins
-#
-# 1.25K / min
-#
-# 0.02K / s
-
-# 0.02K * C_WATER * M_ALGAE
+C_WATER = 4.184                          # (J/gK) specific heat capacity
+MAX_FLOW_RATE = 0.8                      # amt cooling water in pipe (g/s)
+T_RESERVOIR = celc(25.0)                # (K) cooling water reservoir temp

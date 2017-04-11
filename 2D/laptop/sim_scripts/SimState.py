@@ -3,7 +3,7 @@ import requests
 from os         import environ
 from time       import sleep
 
-from helpers    import blue, unblock
+from helpers    import unblock, yellow_bold
 
 API_KEY  = environ['DATA_GOV_API_KEY']
 WIND_URL = 'https://api.data.gov.sg/v1/environment/wind-speed'
@@ -61,7 +61,7 @@ class SimState(object):
                     self.solar_irradiance = self.get_solar_irradiance()
                     count = 0
 
-                print blue( 'Temperature: {}C, Wind Velocity: {}m/s'.format(self.temp, self.wind_vel) )
+                print yellow_bold( 'Temperature: {}C, Wind Velocity: {}m/s'.format(self.temp-273.15, self.wind_vel) )
             except:
                 print 'Failed to retrieve temperature / wind velocity'
 

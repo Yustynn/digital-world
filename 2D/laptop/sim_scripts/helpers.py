@@ -12,17 +12,20 @@ def unblock(fn):
     t.start()
 
 # string formatters
-BOLD    = '\e[1m'
-BLUE    = '\e[34'
-GREEN   = '\e[92m'
-RED     = '\e[91m'
-YELLOW  = '\e[93m'
-RESET   = '\e[0m'
+BLUE    = "\033[0;34m"
+GREEN   = "\033[0;32m"
+RED     = "\033[0;31m"
+YELLOW  = "\033[0;33m"
+RESET   = "\033[0m"
+
+YELLOW_BOLD = "\033[1;33m"
 
 def colorizer_maker(color):
     return lambda str: color + str + RESET
 
-bold, blue, green, red, yellow = map(colorizer_maker, [BOLD, BLUE, GREEN, RED, YELLOW])
+blue, green, red, yellow = map(colorizer_maker, [BLUE, GREEN, RED, YELLOW])
+
+yellow_bold = colorizer_maker(YELLOW_BOLD)
 
 # unit converters
 celc = lambda c: c + 273.15 # degC to K

@@ -10,7 +10,7 @@ def norm(v, lim):
     return max(v, -lim)
 
 class Controller(SM):
-    def __init__(self, target_temp=30.0, kp=1.0991, kd=0.5286):
+    def __init__(self, target_temp=30.0, kp=-1.0991, kd=-0.5286):
         self.kp = float(kp)
         self.kd = float(kd)
         self.target_temp = target_temp
