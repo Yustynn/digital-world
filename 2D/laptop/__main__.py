@@ -54,6 +54,13 @@ class GUIApp(App):
         self.controller = Controller(target_temp = state.target_temp)
         self.controller.start()
 
+        self.sim_mode = SIM_MODE
+
+        if self.sim_mode:
+            from sim import env_conds
+            self.env_conds = env_conds
+            self.env_conds.power = 0
+
         Clock.schedule_interval(self.update, UPDATE_INTERVAL)
 
     def build(self):
@@ -68,6 +75,8 @@ class GUIApp(App):
         power = controller.step(state.temp).pump
         state.set('power', power)
 
+        if self.sim_mode:
+            self.env_conds.power = power
 
 if __name__ == '__main__':
     GUIApp().run()

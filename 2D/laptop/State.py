@@ -48,7 +48,7 @@ class State(Widget):
         self.sim_mode = sim_mode
 
         if self.sim_mode:
-            from simulation.__main__ import bottle, start, env_conds
+            from sim import bottle, start, env_conds
             self.bottle    = bottle
             self.env_conds = env_conds
             unblock(start)

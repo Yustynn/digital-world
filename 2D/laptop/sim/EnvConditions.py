@@ -15,6 +15,8 @@ HEADERS = {'Content-Type': 'application/json', 'api-key': API_KEY}
 class EnvConditions(object):
     def __init__(self, update_interval = 60):
 
+        self.power            = 0
+
         metadata        = self.get_metadata(WIND_URL)
         self.location    = metadata['name']
         self.station_id  = metadata['device_id']
@@ -53,9 +55,9 @@ class EnvConditions(object):
             try:
                 self.temp     = self.get_temp()
                 self.wind_vel = self.get_wind_vel()
-                
+
                 count += 1
-                
+
                 if count > 5:
                     self.solar_irradiance = self.get_solar_irradiance()
                     count = 0
