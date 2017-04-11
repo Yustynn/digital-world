@@ -1,0 +1,48 @@
+<ValueAdjuster@BoxLayout>:
+    orientation: 'vertical'
+
+    Label:
+        size_hint_y: 0.2
+        text: root.title
+    Slider:
+        id: slider
+        orientation: 'vertical'
+        range: root.range
+        size_hint_y: 0.6
+        step: root.step
+        value: root.value
+
+    Label:
+        font_size: 14
+        size_hint_y: 0.2
+        text: str(root.value)
+
+<Root>:
+    cols: 4
+    rows: 2
+    ValueAdjuster:
+        title: 'Temperature'
+        range: 20, 40
+        step: 0.1
+        value: 35
+
+    ValueAdjuster:
+        title: 'Ideal Temperature'
+        range: 20, 40
+        step: 0.1
+        value: 30
+
+    ValueAdjuster:
+        title: 'kp'
+        range: 0, 2
+        step: 0.01
+        value: 1
+        
+    ValueAdjuster:
+        title: 'kd'
+        range: 0, 2
+        step: 0.01
+        value: 1
+
+    Label:
+        text: str(root.power)

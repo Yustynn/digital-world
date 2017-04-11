@@ -25,17 +25,18 @@ class History(object):
             self.points.pop(0)
 
 class State(Widget):
-    target_temp = NumericProperty(fb.get('target_temp'))
-    power       = NumericProperty(fb.get('power'))
-    temp        = NumericProperty(fb.get('temp'))
+    target_temp      = NumericProperty(fb.get('target_temp'))
+    power            = NumericProperty(fb.get('power'))
+    temp             = NumericProperty(fb.get('temp'))
 
     # # For testing, so the app starts off quick without having to wait for HTTP responses
     # target_temp = NumericProperty(0.0)
     # power       = NumericProperty(0.0)
     # temp        = NumericProperty(0.0)
 
-    sur_temp    = NumericProperty(0.0)
-    wind_vel    = NumericProperty(0.0)
+    sur_temp         = NumericProperty(0.0)
+    wind_vel         = NumericProperty(0.0)
+    solar_irradiance = NumericProperty(0.0)
 
     def __init__(self, sim_mode = SIM_MODE):
         Widget.__init__(self)
@@ -61,6 +62,8 @@ class State(Widget):
                 self.temp     = self.bottle.temp - 273.15
                 self.sur_temp = self.env_conds.temp - 273.15
                 self.wind_vel = self.env_conds.wind_vel
+                self.solar_irradiance = self.env_conds.solar_irradiance
+
                 sleep(UPDATE_INTERVAL * 10)
 
             else:

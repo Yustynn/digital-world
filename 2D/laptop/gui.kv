@@ -10,15 +10,20 @@
     font_size: 12
 
 <SimDataDisplay@BoxLayout>:
-    height: 30
+    height: 60
+    orientation: 'vertical'
     size_hint_y: None
 
-    SimDisplayLabel:
-        text: 'Sur. Temperature: {}°C'.format(state.sur_temp)
-    SimDisplayLabel:
-        text: 'Wind Speed: {}m/s'.format(state.wind_vel)
-    SimDisplayLabel:
-        text: 'Location: {}'.format(state.env_conds.location)
+    BoxLayout:
+        SimDisplayLabel:
+            text: 'Sur. Temperature: {}°C'.format(state.sur_temp)
+        SimDisplayLabel:
+            text: 'Wind Speed: {}m/s'.format(state.wind_vel)
+    BoxLayout:
+        SimDisplayLabel:
+            text: 'Solar Irradiance: {}W/m^2'.format(state.solar_irradiance)
+        SimDisplayLabel:
+            text: 'Location: {}'.format(state.env_conds.location)
 
 
 <DataDisplayRow@BoxLayout>:

@@ -25,7 +25,7 @@ from datetime       import datetime
 
 from EnvConditions  import EnvConditions
 
-env_conds = EnvConditions(60)
+env_conds = EnvConditions()
 
 # Helpers to more semantically express time in seconds
 mins  = lambda m: m*60
@@ -141,7 +141,7 @@ def water(env, bottle):
 
 def composer(env, bottle):
     while 1:
-        # only take sun radiation between 7am and 7pm
+        # only have sun radiate between 7am and 7pm
         if 7 <= datetime.now().hour <= 19:
             env.process(sun(env, bottle))
         env.process(surr_air(env, bottle, env_conds))

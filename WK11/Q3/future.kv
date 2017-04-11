@@ -1,0 +1,30 @@
+<Row@BoxLayout>:
+    val: 0
+    Label:
+        text: root.label
+    TextInput:
+        on_text: root.val = float(self.text) if self.text else 0
+
+<Root@BoxLayout>:
+    orientation: 'vertical'
+
+    Row:
+        id: inv_amt
+        label: 'Investment Amount'
+
+    Row:
+        id: years 
+        label: 'Years'
+
+    Row:
+        id: int_rate
+        label: 'Interest Rate'
+
+    BoxLayout:
+        Label:
+            text: 'Future Value'
+        Label:
+            text: str(root.future_val)
+
+    Button:
+        on_press: root.future_val = round(inv_amt.val * (1 + int_rate.val/12/100)**(12*years.val), 2)

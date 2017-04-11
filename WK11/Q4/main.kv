@@ -1,0 +1,16 @@
+<MenuScreen>:
+    BoxLayout:
+        Button:
+            text: 'Settings'
+            on_press: root.manager.current = 'settings'
+
+        Button:
+            text: 'Quit'
+
+<SettingsScreen>:
+    BoxLayout:
+        Button:
+            text: 'Settings Screen'
+        Button:
+            text: 'Back to Menu'
+            on_press: root.manager.current = 'menu'
