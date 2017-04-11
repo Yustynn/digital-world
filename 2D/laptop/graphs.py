@@ -6,6 +6,11 @@ from kivy.garden.graph  import Graph, LinePlot
 from State              import state, unblock
 from constants          import BLUE, GREEN, ORANGE, UPDATE_INTERVAL
 
+
+# I am a bad bad man who copy pasted instead of abstracting for the code
+# shared between TemperatureGraph and PowerGraph. Hopefully I will undo
+# my sin later.
+ 
 class TemperatureGraph(Graph):
     def __init__(self, **kwargs):
         super(TemperatureGraph, self).__init__(**kwargs)

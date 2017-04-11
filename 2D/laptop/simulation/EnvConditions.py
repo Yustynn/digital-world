@@ -13,30 +13,40 @@ HEADERS = {'Content-Type': 'application/json', 'api-key': API_KEY}
 
 class EnvConditions(object):
     def __init__(self, update_interval = 60):
-        self.temp     = self.get_temp()
-        self.wind_vel = self.get_wind_vel()
-        
+
+        metadata        = self.get_metadata(WIND_URL)
+        print metadata
+        self.location   = metadata['name']
+        self.station_id  = metadata['device_id']
+
+        self.temp       = self.get_temp()
+        self.wind_vel   = self.get_wind_vel()
+
         self.update_interval = update_interval
         unblock(self.update)
 
-    def get_and_parse(self, url):
-        return requests.get(url, headers=HEADERS).json()['items'][0]['readings'][0]['value']
+    def get_metadata(self, url):
+        return requests.get(url, headers=HEADERS).json()['metadata']['stations'][0]
+
+    def get_value(self, url):
+        readings = requests.get(url, headers=HEADERS).json()['items'][0]['readings']
+        reading  = [reading for reading in readings if reading['station_id'] == self.station_id][0]
+
+        return reading['value']
 
     def get_temp(self):
-        return self.get_and_parse(TEMP_URL) + 273.15
+        return self.get_value(TEMP_URL) + 273.15
 
     def get_wind_vel(self):
-        return self.get_and_parse(WIND_URL)
+        return self.get_value(WIND_URL)
 
     def update(self):
         while 1:
             try:
-                print 'hi'
                 self.temp     = self.get_temp()
                 self.wind_vel = self.get_wind_vel()
 
-                print 'huh'
-                print blue( 'Temperature: {}C, Wind Velocity: {}m/s'.format(self.temp, self.wind_vel) ) 
+                print blue( 'Temperature: {}C, Wind Velocity: {}m/s'.format(self.temp, self.wind_vel) )
             except:
                 print 'Failed to retrieve temperature / wind velocity'
 

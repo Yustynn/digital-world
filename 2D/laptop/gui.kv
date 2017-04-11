@@ -6,14 +6,20 @@
 #:import GREEN colors.GREEN
 #:import ORANGE colors.ORANGE
 
+<SimDisplayLabel@Label>:
+    font_size: 12
+
 <SimDataDisplay@BoxLayout>:
     height: 30
     size_hint_y: None
 
-    Label
-        text: 'Surrounding Temperature: {}°C'.format(state.sur_temp)
-    Label
+    SimDisplayLabel:
+        text: 'Sur. Temperature: {}°C'.format(state.sur_temp)
+    SimDisplayLabel:
         text: 'Wind Speed: {}m/s'.format(state.wind_vel)
+    SimDisplayLabel:
+        text: 'Location: {}'.format(state.env_conds.location)
+
 
 <DataDisplayRow@BoxLayout>:
     pos: (100, 100)

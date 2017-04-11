@@ -38,7 +38,7 @@ celcius = lambda c: c + 273.15
 SIM_TIME         = hours(8) + mins(30)   # seconds
 INIT_TEMP        = celcius(35)           # (K) system init temp
 RESERVOIR_TEMP   = celcius(25)           # (K) reservoir constant temp
-RAD_SUN          = 4000                  # heat from Sun (watts)
+RAD_SUN          = 400                  # heat from Sun (watts)
 
 # Physics Constants (for computation)
 BOTTLE_LAMBD     = 0.5                  # conductivity^-1
@@ -100,7 +100,7 @@ class Bottle(object):
 
         delta_Q = -(h * A * delta_T) # for 1s
 
-        print 'Convection removing {} at {}'.format(delta_Q, datetime.now())
+        print 'Convection adding {} at {}'.format(delta_Q, datetime.now())
 
         return self.heat.add(delta_Q)
 
@@ -110,7 +110,7 @@ class Bottle(object):
 
         delta_Q = -(lambd * delta_T) # for 1s
 
-        print 'Conduction removing {} at {}'.format(delta_Q, datetime.now())
+        print 'Conduction adding {} at {}'.format(delta_Q, datetime.now())
 
         return self.heat.add(delta_Q)
 
