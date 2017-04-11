@@ -5,10 +5,7 @@ from kivy.uix.button import Button
 from kivy.app import App
 
 class MenuScreen(Screen):
-    def __init__(self, **kwargs):
-        Screen.__init__(self, **kwargs)
-
-        self.add_widget(Button(text='lol'))
+    pass
 
 class SettingsScreen(Screen):
     pass
@@ -20,6 +17,8 @@ class MainApp(App):
         sm.add_widget(MenuScreen(name='menu'))
         sm.add_widget(SettingsScreen(name='settings'))
         sm.current = 'menu'
+
+        return sm
 
 
 if __name__ == '__main__':
