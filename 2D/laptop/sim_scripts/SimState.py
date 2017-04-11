@@ -12,12 +12,11 @@ UV_URL   = 'https://api.data.gov.sg/v1/environment/uv-index'
 
 HEADERS = {'Content-Type': 'application/json', 'api-key': API_KEY}
 
-class EnvConditions(object):
+class SimState(object):
     def __init__(self, update_interval = 60):
+        self.power       = 0
 
-        self.power            = 0
-
-        metadata        = self.get_metadata(WIND_URL)
+        metadata         = self.get_metadata(WIND_URL)
         self.location    = metadata['name']
         self.station_id  = metadata['device_id']
 

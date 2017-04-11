@@ -48,10 +48,9 @@ class State(Widget):
         self.sim_mode = sim_mode
 
         if self.sim_mode:
-            from sim import bottle, start, env_conds
+            from sim import bottle, sim_state
             self.bottle    = bottle
-            self.env_conds = env_conds
-            unblock(start)
+            self.sim_state = sim_state
 
         # non-blocking update logic
         unblock(self.update)
@@ -59,10 +58,11 @@ class State(Widget):
     def update(self):
         while 1:
             if self.sim_mode:
+                # grab state
                 self.temp     = self.bottle.temp - 273.15
-                self.sur_temp = self.env_conds.temp - 273.15
-                self.wind_vel = self.env_conds.wind_vel
-                self.solar_irradiance = self.env_conds.solar_irradiance
+                self.sur_temp = self.sim_state.temp - 273.15
+                self.wind_vel = self.sim_state.wind_vel
+                self.solar_irradiance = self.sim_state.solar_irradiance
 
                 sleep(UPDATE_INTERVAL * 10)
 

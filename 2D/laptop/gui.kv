@@ -2,9 +2,9 @@
 
 #:import hex kivy.utils.get_color_from_hex
 #:import state State.state
-#:import BLUE colors.BLUE
-#:import GREEN colors.GREEN
-#:import ORANGE colors.ORANGE
+#:import BLUE constants.BLUE
+#:import GREEN constants.GREEN
+#:import ORANGE constants.ORANGE
 
 <SimDisplayLabel@Label>:
     font_size: 12
@@ -23,7 +23,7 @@
         SimDisplayLabel:
             text: 'Solar Irradiance: {}W/m^2'.format(state.solar_irradiance)
         SimDisplayLabel:
-            text: 'Location: {}'.format(state.env_conds.location)
+            text: 'Location: {}'.format(state.sim_state.location)
 
 
 <DataDisplayRow@BoxLayout>:

@@ -6,20 +6,20 @@ if os.path.isfile('./setup.py'):
 # kivy mods
 import kivy
 
-from kivy.app           import App
-from kivy.clock         import Clock
-from kivy.properties    import ListProperty, ObjectProperty, NumericProperty, StringProperty
-from kivy.uix.boxlayout import BoxLayout
-from kivy.uix.widget    import Widget
-
+from kivy.app               import App
+from kivy.clock             import Clock
+from kivy.properties        import ListProperty, ObjectProperty, NumericProperty, StringProperty
+from kivy.uix.boxlayout     import BoxLayout
+from kivy.uix.widget        import Widget
 
 # personal kivy mods
-from State              import state, unblock
-from graphs             import PowerGraph, TemperatureGraph
+from State                  import state
+from graphs                 import PowerGraph, TemperatureGraph
 
 # other personal mods
-from constants          import SIM_MODE, UPDATE_INTERVAL
-from logic.Controller   import Controller
+from constants              import SIM_MODE, UPDATE_INTERVAL
+from sim_scripts.helpers    import unblock
+from logic.Controller       import Controller
 
 
 ### SETUP ###
@@ -57,9 +57,10 @@ class GUIApp(App):
         self.sim_mode = SIM_MODE
 
         if self.sim_mode:
-            from sim import env_conds
-            self.env_conds = env_conds
-            self.env_conds.power = 0
+            from sim import sim_state, start
+            self.sim_state = sim_state
+            self.sim_state.power = 0
+            unblock(start)
 
         Clock.schedule_interval(self.update, UPDATE_INTERVAL)
 
@@ -76,7 +77,7 @@ class GUIApp(App):
         state.set('power', power)
 
         if self.sim_mode:
-            self.env_conds.power = power
+            self.sim_state.power = power
 
 if __name__ == '__main__':
     GUIApp().run()

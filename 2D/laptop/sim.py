@@ -25,11 +25,11 @@ from simpy.rt               import RealtimeEnvironment
 from time                   import sleep, strftime
 from datetime               import datetime
 
-from sim.EnvConditions      import EnvConditions
-from sim.helpers            import celc, hours, mins # unit converters
+from sim_scripts.SimState           import SimState
+from sim_scripts.helpers            import celc, hours, mins # unit converters
 
-import sim.delta_Qs          as delta_Qs
-import sim.physics_constants as p
+import sim_scripts.delta_Qs          as delta_Qs
+import sim_scripts.physics_constants as p
 
 # Simpy Config
 SIM_TIME         = hours(24)             # seconds
@@ -64,25 +64,27 @@ class Bottle(object):
     def temp(self):
         return self.heat.level / (p.C_WATER * p.M_ALGAE)
 
-def sun(bottle, env_conds):
+def sun(bottle, sim_state):
 
-    # delta_Q = delta_Qs.sun(env_conds.solar_irradiance)
+    # delta_Q = delta_Qs.sun(sim_state.solar_irradiance)
     delta_Q = delta_Qs.sun(800) # for testing @TODO remove
 
     logger('sun', delta_Q, bottle)
 
     yield bottle.heat.delta(delta_Q)
 
-def cooling(bottle, env_conds):
-    # delta_Q = delta_Qs.cooling(env_conds.power)
+def cooling(bottle, sim_state):
+    # delta_Q = delta_Qs.cooling(sim_state.power)
     delta_Q = delta_Qs.cooling(1) # for testing, use max power @TODO remove
+
+    print '\n\n\nPOWER: {}'.format(sim_state.power)
 
     logger('cooling system', delta_Q, bottle)
 
     yield bottle.heat.delta(delta_Q)
 
-def surroundings(bottle, env_conds):
-    delta_Q = delta_Qs.surroundings(bottle.temp, env_conds.temp)
+def surroundings(bottle, sim_state):
+    delta_Q = delta_Qs.surroundings(bottle.temp, sim_state.temp)
 
     logger('surroundings', delta_Q, bottle)
 
@@ -94,12 +96,12 @@ def print_results(bottle):
         SIM_TIME, bottle.temp, bottle.heat.level)
 
 
-def composer(env, bottle, env_conds):
+def composer(env, bottle, sim_state):
     while True:
-        env.process( cooling(bottle, env_conds) )
-        env.process( surroundings(bottle, env_conds) )
+        env.process( cooling(bottle, sim_state) )
+        env.process( surroundings(bottle, sim_state) )
         if 7 <= datetime.now().hour <= 19:
-            env.process( sun(bottle, env_conds) )
+            env.process( sun(bottle, sim_state) )
 
         print 'Runtime: {}s \n'.format(env.now)
 
@@ -109,17 +111,16 @@ def composer(env, bottle, env_conds):
         yield env.timeout(1)
 
 env = RealtimeEnvironment(strict=False)
-env_conds = EnvConditions()
-#
-## FOR TESTING ##
-from simpy import Environment
-env = Environment()
-SIM_TIME = hours(5)
+sim_state = SimState()
+
+# ## FOR TESTING ##
+# from simpy import Environment
+# env = Environment()
+# SIM_TIME = hours(5)
 
 bottle = Bottle(env)
 
-env.process( composer(env, bottle, env_conds) )
-
+env.process( composer(env, bottle, sim_state) )
 
 def start():
     env.run(until=SIM_TIME)
