@@ -21,6 +21,10 @@ class ValueAdjuster(BoxLayout):
     title = StringProperty('')
     value = NumericProperty(50)
 
+    def __init__(self, **kwargs):
+        super(ValueAdjuster, self).__init__(**kwargs)
+        silder = self.ids['slider']
+
 
 class Root(BoxLayout):
     # listens to value changes and changes controller accordingly
@@ -42,19 +46,12 @@ class Root(BoxLayout):
         controller.temp = val
 
     def update(self, _):
-        # controller.step(self._temp - 0.02)
-        # controller.step(self._temp - 0.02)
-        # sleep(0.1)
-        print self._temp
-        controller.step(self._temp)
         self.power = controller.step(self._temp)[0]
 
     binder = lambda key: lambda self, _, val: controller.set(key, val)
     on_target_temp = binder('target_temp')
     on_kd          = binder('kd')
     on_kp          = binder('kp')
-
-
 
 class TestApp(App):
     build = lambda s: Root()

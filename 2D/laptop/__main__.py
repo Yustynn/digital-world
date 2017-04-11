@@ -18,14 +18,11 @@ from graphs                 import PowerGraph, TemperatureGraph
 
 # other personal mods
 from constants              import SIM_MODE, UPDATE_INTERVAL
-from sim_scripts.helpers    import unblock
+from sim_scripts.helpers    import unblock # allows us to thread functions
 from logic.Controller       import Controller
-
 
 ### SETUP ###
 kivy.require('1.9.1') # could propably go even earlier, but just in case
-
-UPDATE_INTERVAL = 1.0/60
 
 # I made a central source of truth. Don't like how kivy handles state
 class RootWidget(Widget):
