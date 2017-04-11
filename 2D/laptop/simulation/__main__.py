@@ -15,37 +15,29 @@ temperature and those which decrease it. To that end:
 - INDETERMINATE due to convection between bottle and surrounding air (depends
  on temperature)
 
-For simplicity, we assume that radiation from the Sun is constant between 7am
-and 7pm, and that there is no radiation from the Sun otherwise.
+For simplicity, we make the following assumptions:
+- radiation from the Sun only occurs between 7am btwn 7pm
+- the cooling water does not lose heat as it flows through the algae water
+- 
 '''
 
 from simpy          import Container
 from simpy.rt       import RealtimeEnvironment
+from time           import strftime
 from datetime       import datetime
 
 from EnvConditions  import EnvConditions
+from helpers        import celc, hours, mins # unit converters
+from State          import state
+
+import delta_Qs
+import physics_constants as p
 
 env_conds = EnvConditions()
 
-# Helpers to more semantically express time in seconds
-mins  = lambda m: m*60
-hours = lambda h: mins(h*60)
-
-# celcius -> kelvin
-celcius = lambda c: c + 273.15
-
 # Simpy Config
 SIM_TIME         = hours(8) + mins(30)   # seconds
-INIT_TEMP        = celcius(35)           # (K) system init temp
-RESERVOIR_TEMP   = celcius(25)           # (K) reservoir constant temp
-RAD_SUN          = 400                  # heat from Sun (watts)
-
-# Physics Constants (for computation)
-BOTTLE_LAMBD     = 0.5                  # conductivity^-1
-BOTTLE_AIR_SA    = 0.05                 # (m^2) bottle surface area exposed to air
-BOTTLE_GROUND_SA = 0.02                 # (m^2) bottle surface area exposed to ground
-ALGAE_MASS       = 40                    # g
-ALGAE_C          = 4.184                 # J/gK
+INIT_BOTTLE_TEMP = celc(35)              # (K) system init temp
 
 env = RealtimeEnvironment(strict=False)
 
@@ -54,103 +46,64 @@ env = RealtimeEnvironment(strict=False)
 # env = Environment()
 # SIM_TIME = 10
 
+def logger(process_name, delta_Q, bottle):
+    time = strftime('%r')
+
+    print '{}: {} -> {:.2f}J change in heat -> {}J, {}K'.format(\
+        time, process_name, delta_Q, bottle.temp)
+
 class HeatContainer(Container):
     def init(self, **kwargs):
         Container.__init__(self, **kwargs)
 
-    # we often don't know if the heat is additive or subtractive. This can take either
-    def add(self, amt):
+    # often don't know if the heat is additive or subtractive. This can take either
+    def delta(self, amt):
         if amt > 0:
             return self.put(amt)
 
         return self.get(-amt)
 
 class Bottle(object):
-    '''
-    Bottle houses algae (in water)
-    Algae, bottle and water all seen as a single system
-
-    Heat transfer with surrounding air
-    '''
-
-    def __init__(self):
-        heat_val = self.temp_to_heat(INIT_TEMP)
-
-        self.env        = env
-        self.heat       = HeatContainer(env, init=heat_val)
-        self.lambd      = BOTTLE_LAMBD
-
-        self.sa = {
-            'air':    BOTTLE_AIR_SA,
-            'ground': BOTTLE_GROUND_SA
-        }
+    def __init__(self, env, init_temp=INIT_BOTTLE_TEMP):
+        heat_amt = init_temp * p.C_WATER * p.M_ALGAE
+        self.heat = HeatContainer(env, init=heat_amt)
 
     @property
     def temp(self):
-        return self.heat_to_temp(self.heat.level)
+        self.heat.level / (p.C_WATER * p.M_ALGAE)
 
-    def heat_to_temp(self, heat):
-        return heat / (ALGAE_MASS * ALGAE_C)
+def sun(bottle, env_conds):
+    delta_Q = delta_Qs['sun'](env_conds.solar_irradiance)
 
-    def temp_to_heat(self, temp):
-        return temp * (ALGAE_MASS * ALGAE_C)
+    logger('sun', delta_Q, bottle)
 
-    def convection(self, h, A, T_sur):
-        delta_T = self.temp - T_sur
+    yield bottle.heat.delta(delta_Q)
 
-        delta_Q = -(h * A * delta_T) # for 1s
+def cooling(bottle, state):
+    delta_Q = delta_Qs['cooling'](state.power)
 
-        print 'Convection adding {} at {}'.format(delta_Q, datetime.now())
+    logger('cooling system', delta_Q, bottle)
 
-        return self.heat.add(delta_Q)
+    yield bottle.heat.delta(delta_Q)
 
-    def conduction(self, T_sur):
-        lambd   = self.lambd
-        delta_T = self.temp - T_sur
+def surroundings(bottle, env_conds):
+    delta_Q = delta_Qs['surroundings'](bottle.temp, env_conds.temp)
 
-        delta_Q = -(lambd * delta_T) # for 1s
+    logger('surroundings', delta_Q, bottle)
 
-        print 'Conduction adding {} at {}'.format(delta_Q, datetime.now())
+    yield bottle.heat.delta(delta_Q)
 
-        return self.heat.add(delta_Q)
-
-def sun(env, bottle):
-    yield bottle.heat.add(RAD_SUN)
-
-def surr_air(env, bottle, env_conds):
-    T_sur = env_conds.temp
-    v     = env_conds.wind_vel
-
-    # using Watmuff's amendment to Jurges' eqn
-    # source: https://c.ymcdn.com/sites/www.saimeche.org.za/resource/collection/A9416D0D-99A6-4534-B5C5-15E8475524FE/Kr_ger-2002_01__600_dpi_-_2002__18_3___49-54.pdf
-    h = 2.8 + 3*v
-
-    yield bottle.convection(h, bottle.sa['air'], T_sur)
-
-# @TODO: Fix conduction to take in different lambda for this one
-def ground(env, bottle, env_conds):
-    T_sur = env_conds.temp
-
-    yield bottle.conduction(T_sur)
-
-def water(env, bottle):
-    T_sur = RESERVOIR_TEMP
-
-    print 'WATER:'
-    yield bottle.conduction(T_sur)
-
-def composer(env, bottle):
-    while 1:
-        # only have sun radiate between 7am and 7pm
+def composer(env, bottle, env_conds, state):
+    while True:
+        env.process( cooling(bottle, state) )
+        env.process( surroundings(bottle, env_conds) )
+        
         if 7 <= datetime.now().hour <= 19:
-            env.process(sun(env, bottle))
-        env.process(surr_air(env, bottle, env_conds))
-        env.process(ground(env, bottle, env_conds))
-        print '{:.2f}K temperature!'.format(bottle.temp)
+            env.process( sun(bottle, env_conds) )
+
         yield env.timeout(1)
 
-bottle = Bottle()
-env.process( composer(env, bottle) )
+env.process( composer(env, bottle, env_conds, state) )
 
 def start():
     env.run(until=SIM_TIME)
