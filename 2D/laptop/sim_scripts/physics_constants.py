@@ -9,5 +9,6 @@ SA_ALGAE = {
 }
 
 C_WATER = 4.184                          # (J/gK) specific heat capacity
-MAX_FLOW_RATE = 0.8                      # amt cooling water in pipe (g/s)
-T_RESERVOIR = celc(25.0)                # (K) cooling water reservoir temp
+MAX_FLOW_RATE = 0.8                      # (g/s) amt cooling water in pipe
+MAX_POWER = 1.5                          # (W) assume 6V, 0.25A
+T_RESERVOIR = celc(25.0)                 # (K) cooling water reservoir temp

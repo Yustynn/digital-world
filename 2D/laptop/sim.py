@@ -86,6 +86,7 @@ def sun(bottle, sim_state):
 
 def cooling(bottle, sim_state):
     delta_Q = delta_Qs.cooling(sim_state.power)
+    sim_state.power_consumed += sim_state.power * p.MAX_POWER
 
     logger('cooling system', delta_Q, bottle, blue)
 

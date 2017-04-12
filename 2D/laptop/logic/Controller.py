@@ -1,3 +1,19 @@
+'''
+We use a proportional derivative control. This is to reduce the amplitude of
+oscillation between being too far above (too hot) or too far below (too cold)
+the target temperature.
+
+The proportional derivative controller, to use a physical analogy, attempts to
+get us to the target temperature as fast as possible. In doing so, it induces a
+'momentum' which causes us to exceed this target temperature when reached,
+which in turn induces a negative error, causing it to 'decelerate' and eventually
+swing back the other way around. This cycles, creating a large error oscillation.
+
+Extending this analogy, the derivative controller, being perpertually in the
+opposite direction to the proportional controller, acts to 'slow down' the
+
+'''
+
 from libdw.sm    import SM
 from collections import namedtuple
 from time        import time

@@ -34,8 +34,9 @@ class State(Widget):
     # power       = NumericProperty(0.0)
     # temp        = NumericProperty(0.0)
 
-    sur_temp         = NumericProperty(0.0)
+    power_consumed   = NumericProperty(0.0)
     wind_vel         = NumericProperty(0.0)
+    sur_temp         = NumericProperty(0.0)
     solar_irradiance = NumericProperty(0.0)
 
     def __init__(self, sim_mode = SIM_MODE):
@@ -63,6 +64,7 @@ class State(Widget):
                 self.sur_temp = self.sim_state.temp - 273.15
                 self.wind_vel = self.sim_state.wind_vel
                 self.solar_irradiance = self.sim_state.solar_irradiance
+                self.power_consumed   = self.sim_state.power_consumed
 
                 sleep(UPDATE_INTERVAL * 10)
 
