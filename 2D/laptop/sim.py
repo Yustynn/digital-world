@@ -77,8 +77,7 @@ class Bottle(object):
 
 ### HEAT TRANSFER PROCESSES (not simpy processes) ###
 def sun(bottle, sim_state):
-    # delta_Q = delta_Qs.sun(sim_state.solar_irradiance)
-    delta_Q = delta_Qs.sun(200) # for testing @TODO remove
+    delta_Q = delta_Qs.sun(sim_state.solar_irradiance)
 
     logger('sun', delta_Q, bottle, red)
 
@@ -86,6 +85,8 @@ def sun(bottle, sim_state):
 
 def cooling(bottle, sim_state):
     delta_Q = delta_Qs.cooling(sim_state.power)
+
+    # log power consumed
     sim_state.power_consumed += sim_state.power * p.MAX_POWER
 
     logger('cooling system', delta_Q, bottle, blue)
