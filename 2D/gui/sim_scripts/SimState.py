@@ -14,8 +14,8 @@ HEADERS = {'Content-Type': 'application/json', 'api-key': API_KEY}
 
 class SimState(object):
     def __init__(self, update_interval = 60):
-        self.power          = 0.0
-        self.power_consumed = 0.0
+        self.power          = 0.0 # [0.0:1.0]
+        self.power_consumed = 0.0 # (J)
 
         metadata         = self.get_metadata(WIND_URL)
         self.location    = metadata['name']
