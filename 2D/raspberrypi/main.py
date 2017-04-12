@@ -10,6 +10,9 @@ from PWM        import WaterPump
 
 from helpers    import unblock
 
+PUMP_PIN1 = 21
+PUMP_PIN2 = 17
+
 temp_reader = TempReader()
 
 def update_temp():
@@ -25,7 +28,7 @@ def update_temp():
 # allows temperature to be constantly updated using a separate thread (non-blocking)
 unblock(update_temp)
 
-pump = WaterPump(32, 32)
+pump = WaterPump(PUMP_PIN1, PUMP_PIN2)
 while 1:
     try:
         power = float( fb.get('power') )

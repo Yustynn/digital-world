@@ -1,4 +1,5 @@
 '''
+# PD vs P
 We use a proportional derivative control. This is to reduce the amplitude of
 oscillation between being too far above (too hot) or too far below (too cold)
 the target temperature.
@@ -10,7 +11,13 @@ which in turn induces a negative error, causing it to 'decelerate' and eventuall
 swing back the other way around. This cycles, creating a large error oscillation.
 
 Extending this analogy, the derivative controller, being perpertually in the
-opposite direction to the proportional controller, acts to 'slow down' the
+opposite direction to the proportional controller, acts to 'slow down' the descent
+of the temperature, thereby reducing the overshoot.
+
+# Why Those k Values?
+Taken from 1st order in math. kp = k2-k1, and kd = k1.
+
+We wanted to use a more rigorous formula for PD.
 
 '''
 
