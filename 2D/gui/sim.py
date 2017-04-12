@@ -106,7 +106,7 @@ def conductor(env, bottle, sim_state):
     while True:
         env.process( cooling(bottle, sim_state) )
         env.process( surroundings(bottle, sim_state) )
-        if 1 <= datetime.now().hour <= 19:
+        if 7 <= datetime.now().hour <= 19:
             env.process( sun(bottle, sim_state) )
 
         if IS_LOG_ON:
