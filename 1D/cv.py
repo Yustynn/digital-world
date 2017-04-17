@@ -3,9 +3,9 @@
 from SimpleCV import Color, Image
 
 FILTERS = {
-    'red':   (110,0,0),
-    'blue':  (0,0,80),
-    'green': (0,80,0)
+    'red':   (127,9,27),
+    'blue':  (0,97,126),
+    'green': (18,140,67)
 }
 
 def filter_to_point(filter, imgname):

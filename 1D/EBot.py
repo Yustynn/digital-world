@@ -1,36 +1,50 @@
-from math import acos, pi
-from time  import sleep
-from utils import Line, Point
+from eBot           import eBot
+from collections    import namedtuple
+from math           import acos, pi
+from time           import sleep
+from utils          import Line, Point
 
-class EBot(object):
+AlignmentInstruction = namedtuple('AlignmentInstruction', ['theta', 'direction'])
+
+class EBot(eBot.eBot):
     def __init__(self, front=Point(), back=Point()):
+        eBot.eBot.__init__(self) # super didn't work, was python 3?
         self.front = front
         self.back  = back
+        self.connect()
 
-    def angle_to(self, target):
-        dir_line = Line.from_points(self.back, self.front)
-        print dir_line.m, dir_line.c
+    def align_to(self, target):
+        direction, theta = self.get_alignment_instruction(target)
+        self.pivot(direction, theta=theta)
 
-        p = dir_line.closest_point_to(target)
+    def get_alignment_instruction(self, target):
+        # dir_line = Line.from_points(self.back, self.front)
+        # print dir_line.m, dir_line.c
+        #
+        # p = dir_line.closest_point_to(target)
+        #
+        # adj = self.front.dist_to(p)
+        # hyp = self.front.dist_to(target)
+        #
+        # theta = acos(adj/hyp)
 
-        adj = self.front.dist_to(p)
-        hyp = self.front.dist_to(target)
+        FB = -self.front + self.back
+        FT = -self.front + target
 
-        theta = acos(adj/hyp)
+        dot = (FB.x * FT.x) + (FB.y * FT.y)
+        mag_sum = FB.mag + FT.mag
 
-        is_target_left_of_line = (target.x - dir_line.get_x(target.y)) > 0
-        is_ebot_backward       = target.dist_to(self.back) < target.dist_to(self.front)
+        theta = acos( (dot / mag_sum) % 1 )
+        print 'FB: {}, FT: {}, dot/mag_sum: {:.2f}, theta: {:.3f}'.format(FB, FT, dot/mag_sum, theta)
 
-        if is_target_left_of_line:
-            theta *= -1
-        if is_ebot_backward:
-            theta -= pi
-            theta *= -1
+        z_cross = FB.x * FT.y - (FT.x * FB.y)
 
-        print 'is backwards: {}, is left of line: {}'.format(is_ebot_backward, is_target_left_of_line)
-        print target.dist_to(self.back), target.dist_to(self.front)
+        if z_cross > 0:
+            direction = 'counterclockwise'
+        else:
+            direction = 'clockwise'
 
-        return theta
+        return AlignmentInstruction(direction, theta)
 
     def is_aligned(self, target):
         dir_line = Line.from_points(self.back, self.front)
@@ -39,31 +53,42 @@ class EBot(object):
 
         return dir_line.contains(target) and is_front_closer
 
-    def move(self, direction='forward', movement_duration=None):
+    def move(self, direction='forward', speed=0.5, time=None):
         move_map = {
-            'forward':  ( 1, 1),
-            'backward': (-1,-1),
-            'left':     ( 0, 1),
-            'right':    ( 1, 0)
+            'forward':  ( speed, speed),
+            'backward': (-speed,-speed),
+            'left':     ( 0, speed),
+            'right':    ( speed, 0)
         }
 
-        self.ebot.wheels(*move_map[direction])
+        self.wheels(*move_map[direction])
 
-        if movement_duration:
-            sleep(movement_duration)
+        if time:
+            sleep(time)
             self.stop()
 
-    def pivot(self, direction='right', movement_duration=None):
+    def pivot(self, direction='clockwise', speed=0.5, theta=None, time=None):
         pivot_map = {
-            'left':  (-1, 1),
-            'right': ( 1,-1)
+            'clockwise':         ( speed,-speed),
+            'counterclockwise':  (-speed, speed)
         }
 
-        self.ebot.wheels(*pivot_map[direction])
+        # if theta:
+        #     init_theta = self.odometry().theta # @TODO use this
 
-        if movement_duration:
-            sleep(movement_duration)
+        self.wheels(*pivot_map[direction])
+
+        if theta:
+            INCR = 0.14 # experimentally obtained
+            print 'Angular Movement Desired: {:.3f}, Direction: {}'.format(abs(theta), direction)
+            sleep( abs(theta / INCR) )
             self.stop()
+            return
 
-    def stop():
-        self.ebot.wheels(0,0)
+        if time:
+            sleep(time)
+            self.stop()
+            return
+
+    def stop(self):
+        self.wheels(0,0)

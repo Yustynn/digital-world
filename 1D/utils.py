@@ -3,9 +3,9 @@ from math import acos, pi
 # so I went a little overboard with magic methods for no good reason at all
 class Point(object):
     '''
-    >>> a = Point([0,0])
-    >>> b = Point([0,5])
-    >>> c = Point([1,5])
+    >>> a = Point(0,0)
+    >>> b = Point(0,5)
+    >>> c = Point(1,5)
     >>> a.x
     0.0
     >>> b.y
@@ -18,17 +18,17 @@ class Point(object):
     5.0
     '''
 
-    def __init__(self, coords): # coords can be np
-        self.x, self.y = map(float, list(coords))
+    def __init__(self, x=0, y=0): # coords can be np
+        self.x, self.y = map(float, [x,y])
 
     def __add__(c1, c2):
-        return Point([c1.x + c2.x, c1.y + c2.y ])
+        return Point(c1.x + c2.x, c1.y + c2.y )
 
     def __neg__(self):
-        return Point([-self.x, -self.y])
+        return Point(-self.x, -self.y)
 
     def __sub__(c1, c2):
-        return Point([c1.x - c2.x, c1.y - c2.y ])
+        return Point(c1.x - c2.x, c1.y - c2.y)
 
     def __str__(self):
         return 'x: {:2f}, y: {:2f}'.format(self.x, self.y)
@@ -42,58 +42,45 @@ class Point(object):
 
         return d_y / d_x
 
-    def dist(c1, c2):
+    def dist_to(c1, c2):
         return ((c2.x - c1.x)**2 + (c2.y - c1.y)**2)**0.5
 
-class EBotTracker(object):
-    '''
-    >>> from math import pi
-    >>> coords = [ [0,0], [1,1], [1,-1], [-1,-1], [-1,1] ]
-    >>> points = map(Point, coords)
-    >>> theta = pi/8
-    >>> e = EBotTracker(points[0], points[1])
-    >>> e.orientation
-    True
-    >>> e = EBotTracker(points[0], points[2])
-    >>> e.orientation == theta + pi/4
-    True
-    >>> e = EBotTracker(points[0], points[3])
-    >>> e.orientation == theta + 2*pi/4
-    True
-    >>> e = EBotTracker(points[0], points[4])
-    >>> e.orientation == theta + 3*pi/4
-    True
-    '''
-    def __init__(self, front=Point([0,0]), back=Point([0,0])):
-        self.front = front
-        self.back  = back
-
+    # Vector method
     @property
-    def orientation(self):
-        front, back = self.front, self.back
+    def mag(self):
+        return self.dist_to(Point(0,0))
 
-        c3  = Point([front.y, back.x]) # for getting theta
-        hyp = front.dist(back) or 1E-10
-        adj = front.dist(c3)
+class Line(object):
+    @staticmethod
+    def from_points(p1, p2):
+        m = (p2.y - p1.y) / ( (p2.x - p1.x) or 1E-10)
+        c = p1.y - m*p1.x
+        return Line(m, c)
 
-        theta = acos((adj / hyp)%1)
+    def __init__(self, m, c):
+        self.m = m
+        self.c = c
 
-        is_front_x_gte = front.x >= back.x
-        is_front_y_gte = front.y >= back.y
+    def __call__(self, x):
+        return self.m*x + self.c
 
-        if is_front_x_gte and is_front_y_gte:
-            quad = 1
-        elif is_front_y_gte:
-            quad = 4
-        elif is_front_x_gte:
-            quad = 2
-        else:
-            quad = 3
+    # @TODO make tolerance a function of distance
+    def contains(self, p, tolerance=5):
+        return abs( self(p.x) - p.y ) < tolerance
 
-        theta += (quad-1) * (pi/4)
+    def closest_point_to(self, p):
+        m2 = -1/self.m
+        c2 = p.y - m2*p.x
 
-        return theta
+        tangent = Line(m2, c2)
 
-if __name__ == '__main__':
-    import doctest
-    doctest.testmod()
+        return self.intersect_with(tangent)
+
+    def intersect_with(line1, line2):
+        m1, c1 = line1.m, line1.c
+        m2, c2 = line2.m, line2.c
+
+        x = (c2 - c1) / (m1 - m2)
+        y = line1(x)
+
+        return Point(x, y)
