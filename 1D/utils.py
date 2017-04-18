@@ -1,5 +1,12 @@
 from math import acos, pi
 
+TEST_LOG = True
+
+def tlog(*args):
+    if TEST_LOG:
+        for arg in args:
+            print arg
+
 # so I went a little overboard with magic methods for no good reason at all
 class Point(object):
     '''
@@ -10,7 +17,7 @@ class Point(object):
     0.0
     >>> b.y
     5.0
-    >>> a.dist(b)
+    >>> a.dist_to(b)
     5.0
     >>> a.grad(b)
     50000000000.0
@@ -31,7 +38,7 @@ class Point(object):
         return Point(c1.x - c2.x, c1.y - c2.y)
 
     def __str__(self):
-        return 'x: {:2f}, y: {:2f}'.format(self.x, self.y)
+        return 'x: {:>5.1f}, y: {:>5.1f}'.format(self.x, self.y)
 
     def grad(c1, c2):
         d_x = c2.x - c1.x
@@ -51,6 +58,18 @@ class Point(object):
         return self.dist_to(Point(0,0))
 
 class Line(object):
+    '''
+    >>> l = Line(2.5, 10)
+    >>> l(10)
+    35.0
+    >>> l.contains(Point(1,1))
+    False
+    >>> l.contains(Point(100, 260))
+    True
+    >>> p = l.intersect_with(Line(7,3))
+    >>> print p
+    x:   1.6, y:  13.9
+    '''
     @staticmethod
     def from_points(p1, p2):
         m = (p2.y - p1.y) / ( (p2.x - p1.x) or 1E-10)
@@ -64,17 +83,25 @@ class Line(object):
     def __call__(self, x):
         return self.m*x + self.c
 
+    def __str__(self):
+        return 'y = {:.2f}x + {:.2f}'.format(self.m, self.c)
+
     # @TODO make tolerance a function of distance
-    def contains(self, p, tolerance=5):
-        return abs( self(p.x) - p.y ) < tolerance
+    def contains(self, p, tolerance=25):
+        # tlog('Actual Y: {:>5.1f}, Expected Y: {:>5.1f}, Diff: {:>5.1f}, Tol: {:.1f}'.format(p.y, self(p.x), abs( self(p.x) - p.y ), tolerance))
+#
+        closest = self.closest_point_to(p)
+        print 'Actual: {}, Closest: {}, Distance: {:>5.1f}'.format(p, closest, closest.dist_to(p))
+        print self
+        return closest.dist_to(p) < tolerance
+        # return abs( self(p.x) - p.y ) < tolerance
 
     def closest_point_to(self, p):
-        m2 = -1/self.m
+        m2 = -1/ (self.m or 1E-10)
         c2 = p.y - m2*p.x
 
-        tangent = Line(m2, c2)
-
-        return self.intersect_with(tangent)
+        closest_tangent = Line(m2, c2)
+        return self.intersect_with(closest_tangent)
 
     def intersect_with(line1, line2):
         m1, c1 = line1.m, line1.c
@@ -84,3 +111,7 @@ class Line(object):
         y = line1(x)
 
         return Point(x, y)
+
+if __name__ == '__main__':
+    import doctest
+    doctest.testmod()

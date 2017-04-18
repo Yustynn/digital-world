@@ -15,7 +15,7 @@ class EBot(eBot.eBot):
 
     def align_to(self, target):
         direction, theta = self.get_alignment_instruction(target)
-        self.pivot(direction, theta=theta)
+        self.pivot(direction, speed=0.2, theta=theta)
 
     def get_alignment_instruction(self, target):
         # dir_line = Line.from_points(self.back, self.front)
@@ -46,11 +46,14 @@ class EBot(eBot.eBot):
 
         return AlignmentInstruction(direction, theta)
 
-    def is_aligned(self, target):
+    def is_aligned_to(self, target):
         dir_line = Line.from_points(self.back, self.front)
 
         is_front_closer = self.back.dist_to(target) > self.front.dist_to(target)
 
+        print 'is front closer: {}'.format(is_front_closer)
+
+        print '\n\nDIRLINE CONTAINS TARGET: {}\n\n'.format(dir_line.contains(target))
         return dir_line.contains(target) and is_front_closer
 
     def move(self, direction='forward', speed=0.5, time=None):
@@ -79,9 +82,9 @@ class EBot(eBot.eBot):
         self.wheels(*pivot_map[direction])
 
         if theta:
-            INCR = 0.14 # experimentally obtained
+            INCR = 0.20 # experimentally obtained, loljk it's a bullshit value
             print 'Angular Movement Desired: {:.3f}, Direction: {}'.format(abs(theta), direction)
-            sleep( abs(theta / INCR) )
+            sleep( abs(theta / INCR) * 0.1 )
             self.stop()
             return
 
