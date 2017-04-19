@@ -3,6 +3,8 @@ from time           import sleep
 
 from cv             import get_points
 from EBot           import EBot
+from helpers        import log, tlog
+from State          import state
 from still          import download_still
 from utils          import Point
 
@@ -17,32 +19,37 @@ SLEEP_TIME = 0.4
 IMG_SAVE_NAME = 'temp.bmp'
 IMG_URL = 'http://10.21.141.141/html/cam_pic.php'
 
-print 'Initializing eBot...'
+log( 'Initializing eBot...' )
 ebot = EBot()
-print 'eBot initialized!'
+log( 'eBot initialized!' )
 
-i = 0
+iteration = 0
 
 while True:
     try:
-        i += 1
-        print '\n\n{:-^80}\n'.format('ITERATION ' + str(i))
+        iteration += 1
+        log( '\n\n{:-^80}\n'.format('ITERATION ' + str(iteration)) )
 
         # LOCALIZATION
         download_still(IMG_URL, IMG_SAVE_NAME)
         points = get_points(IMG_SAVE_NAME)
 
-        print points
-
-        if not i % 10:
-            fb.update(points)
+        log( points )
 
         ebot.front = Point(*points['blue'])
         ebot.back  = Point(*points['green'])
         target     = Point(*points['red'])
 
+        if not state.is_in_on_region(target):
+            log( 'Target in off region. Pausing for {} seconds'.format(SLEEP_TIME), color='red' )
+
+        if not iteration % 10:
+            log( 'Tracking state', color='blue' )
+            fb.update_points(points)
+            state.track_target(target)
+
         if not ebot.front.exists or not ebot.back.exists:
-            print 'whoops, green or blue not found. Skip!!'
+            log( 'Front/Back of ebot not found! Moving to next iteration...', color='red' )
             continue
 
         if target.exists:
@@ -50,13 +57,13 @@ while True:
             if not ebot.is_aligned_to(target):
                 ebot.stop()
                 ebot.align_to(target)
-                print 'aligned!\n\n'
+                log( 'Alignment iteration done!' )
+                continue
             # MOVEMENT
             ebot.move(speed=1, time=0.1)
-            print 'eBot marching!'
         else:
             ebot.stop()
-            print 'EBOT ON TARGET!'
+            log( 'EBOT ON TARGET!', color='green' )
 
         sleep(SLEEP_TIME)
 

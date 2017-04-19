@@ -7,16 +7,16 @@ TOKEN = "avxnAEHlshI3X9XUYWpa88AgOsbBmx30DdSV6hqN"
 
 fb = firebase.FirebaseApplication(URL, TOKEN)
 
-def update(points):
+def update_points(points):
     def updater():
         # FIREBASE UPDATE
-        print 'Updating firebase...'
+        log( 'Updating firebase...', color='blue' )
         try:
             for key, point in points.iteritems():
                 fb.put('/', key, point)
-            print 'Firebase updated!'
+            log( 'Firebase updated!', color='blue' )
         except:
-            print 'Firebase update failed'
+            log( 'Firebase update failed', color='red' )
 
     t = Thread(target=updater)
     t.daemon = True

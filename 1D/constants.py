@@ -1,0 +1,8 @@
+CAMERA_X_MAX = 512.0
+CAMERA_Y_MAX = 384.0
+
+GRID_X_MAX = 29
+GRID_Y_MAX = 14
+
+LOG      = True
+TEST_LOG = True

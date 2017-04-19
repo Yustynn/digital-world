@@ -75,7 +75,7 @@ class EBot(eBot.eBot):
 
 
         if theta:
-            INCR = 0.20 # experimentally obtained, loljk it's a bullshit value
+            INCR = 0.15 # experimentally obtained, loljk it's a bullshit value
             print 'Angular Movement Desired: {:.3f}, Direction: {}'.format(abs(theta), direction)
             sleep( abs(theta / INCR) * 0.1 )
             self.stop()
