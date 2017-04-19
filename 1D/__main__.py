@@ -1,12 +1,12 @@
 # NOTE: EBotTracker orientation isn't working correctly yet
-
-from firebase       import firebase
 from time           import sleep
 
 from cv             import get_points
 from EBot           import EBot
 from still          import download_still
 from utils          import Point
+
+import fb
 
 import traceback
 
@@ -16,12 +16,6 @@ SLEEP_TIME = 0.4
 # image stuff
 IMG_SAVE_NAME = 'temp.bmp'
 IMG_URL = 'http://10.21.141.141/html/cam_pic.php'
-
-# firebase setup
-URL = "https://dw-1d-ebot.firebaseio.com/"
-TOKEN = "avxnAEHlshI3X9XUYWpa88AgOsbBmx30DdSV6hqN"
-
-fb = firebase.FirebaseApplication(URL, TOKEN)
 
 print 'Initializing eBot...'
 ebot = EBot()
@@ -33,39 +27,36 @@ while True:
     try:
         i += 1
         print '\n\n{:-^80}\n'.format('ITERATION ' + str(i))
+
         # LOCALIZATION
         download_still(IMG_URL, IMG_SAVE_NAME)
         points = get_points(IMG_SAVE_NAME)
+
+        print points
+
+        if not i % 10:
+            fb.update(points)
 
         ebot.front = Point(*points['blue'])
         ebot.back  = Point(*points['green'])
         target     = Point(*points['red'])
 
-        print points
+        if not ebot.front.exists or not ebot.back.exists:
+            print 'whoops, green or blue not found. Skip!!'
+            continue
 
-        if ebot.back.x == 256:
-            print 'whoops, green error. Next!'
-            continue 
-
-
-        # # FIREBASE UPDATE
-        # print 'Updating firebase...'
-        # try:
-        #     for key, point in points.iteritems():
-        #         fb.put('/', key, point)
-        #     print 'Firebase updated!'
-        # except KeyboardInterrupt:
-        #     break
-        # except:
-        #     print 'Firebase update failed'
-
-        # ALIGNMENT
-        if ebot.is_aligned_to(target):
-            ebot.stop()
-            pass
+        if target.exists:
+            # ALIGNMENT
+            if not ebot.is_aligned_to(target):
+                ebot.stop()
+                ebot.align_to(target)
+                print 'aligned!\n\n'
+            # MOVEMENT
+            ebot.move(speed=1, time=0.1)
+            print 'eBot marching!'
         else:
-            ebot.align_to(target)
-            print 'aligned!\n\n'
+            ebot.stop()
+            print 'EBOT ON TARGET!'
 
         sleep(SLEEP_TIME)
 
@@ -73,7 +64,7 @@ while True:
     except KeyboardInterrupt:
         break
     except ZeroDivisionError:
-        print 'Whoops! Divided by 0!'
+        print 'Whoops! Divided by 0! Let\'s keep going!'
         traceback.print_exc()
     except Exception, e:
         print 'PROBREM: {}'.format(e)

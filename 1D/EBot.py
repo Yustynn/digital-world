@@ -18,15 +18,6 @@ class EBot(eBot.eBot):
         self.pivot(direction, speed=0.2, theta=theta)
 
     def get_alignment_instruction(self, target):
-        # dir_line = Line.from_points(self.back, self.front)
-        # print dir_line.m, dir_line.c
-        #
-        # p = dir_line.closest_point_to(target)
-        #
-        # adj = self.front.dist_to(p)
-        # hyp = self.front.dist_to(target)
-        #
-        # theta = acos(adj/hyp)
 
         FB = -self.front + self.back
         FT = -self.front + target
@@ -56,12 +47,11 @@ class EBot(eBot.eBot):
         print '\n\nDIRLINE CONTAINS TARGET: {}\n\n'.format(dir_line.contains(target))
         return dir_line.contains(target) and is_front_closer
 
+
     def move(self, direction='forward', speed=0.5, time=None):
         move_map = {
             'forward':  ( speed, speed),
             'backward': (-speed,-speed),
-            'left':     ( 0, speed),
-            'right':    ( speed, 0)
         }
 
         self.wheels(*move_map[direction])
@@ -69,6 +59,7 @@ class EBot(eBot.eBot):
         if time:
             sleep(time)
             self.stop()
+            return
 
     def pivot(self, direction='clockwise', speed=0.5, theta=None, time=None):
         pivot_map = {
@@ -76,15 +67,50 @@ class EBot(eBot.eBot):
             'counterclockwise':  (-speed, speed)
         }
 
+        ## Part of better code
         # if theta:
-        #     init_theta = self.odometry().theta # @TODO use this
+        #     init_theta = self.theta
 
         self.wheels(*pivot_map[direction])
+
 
         if theta:
             INCR = 0.20 # experimentally obtained, loljk it's a bullshit value
             print 'Angular Movement Desired: {:.3f}, Direction: {}'.format(abs(theta), direction)
             sleep( abs(theta / INCR) * 0.1 )
+            self.stop()
+            return
+
+        # @TODO debug this better code
+        # if theta:
+        #     orig_desired = desired = init_theta + theta
+        #
+        #     # adjust for how eBot API handles theta [0, 2*pi]
+        #     if desired > 2*pi:
+        #         desired -= 2*pi
+        #     elif desired < 0:
+        #         desired += 2*pi
+        #
+        #     # keep turning till we hit our mark
+        #     while True:
+        #         sleep(0.05)
+        #         curr = self.theta
+        #         print 'Desired: {:.2f}, Current: {:.2f}'.format(desired, curr)
+        #         if direction == 'clockwise':
+        #             if orig_desired > init_theta:
+        #                 if curr > desired:
+        #                     break
+        #             else:
+        #                 if curr > desired and curr < init_theta:
+        #                     break
+        #         else:
+        #             if orig_desired > init_theta:
+        #                 if curr < desired and curr > init_theta:
+        #                     break
+        #             else:
+        #                 if curr < desired:
+        #                     break
+
             self.stop()
             return
 
@@ -95,3 +121,8 @@ class EBot(eBot.eBot):
 
     def stop(self):
         self.wheels(0,0)
+
+
+    @property
+    def theta(self):
+        return self.odometry().theta

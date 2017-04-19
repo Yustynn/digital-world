@@ -31,6 +31,9 @@ class Point(object):
     def __add__(c1, c2):
         return Point(c1.x + c2.x, c1.y + c2.y )
 
+    def __eq__(p1, p2):
+        return p1.x == p2.x and p1.y == p2.y
+
     def __neg__(self):
         return Point(-self.x, -self.y)
 
@@ -52,10 +55,15 @@ class Point(object):
     def dist_to(c1, c2):
         return ((c2.x - c1.x)**2 + (c2.y - c1.y)**2)**0.5
 
+    @property
+    def exists(self):
+        return self.x != 256 and self.y != 192
+
     # Vector method
     @property
     def mag(self):
         return self.dist_to(Point(0,0))
+
 
 class Line(object):
     '''
