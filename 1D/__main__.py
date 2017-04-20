@@ -17,7 +17,7 @@ SLEEP_TIME = 0.4
 
 # image stuff
 IMG_SAVE_NAME = 'temp.bmp'
-IMG_URL = 'http://10.21.141.141/html/cam_pic.php'
+IMG_URL = 'http://10.21.141.141/cam_pic.php'
 
 log( 'Initializing eBot...' )
 ebot = EBot()
@@ -40,16 +40,18 @@ while True:
         ebot.back  = Point(*points['green'])
         target     = Point(*points['red'])
 
-        if not state.is_in_on_region(target):
-            log( 'Target in off region. Pausing for {} seconds'.format(SLEEP_TIME), color='red' )
+        log( 'Target in region {}'.format(state.point_to_region(target)), color='blue' )
 
-        if not iteration % 10:
+        if not iteration % 5:
             log( 'Tracking state', color='blue' )
             fb.update_points(points)
             state.track_target(target)
 
+        if not state.is_in_on_region(target):
+            log( 'Target in off region. Pausing for {} seconds'.format(SLEEP_TIME), color='red' )
+
         if not ebot.front.exists or not ebot.back.exists:
-            log( 'Front/Back of ebot not found! Moving to next iteration...', color='red' )
+            log( 'Front/Back of ebot not found! Moving to next iteration...', color='redbg' )
             continue
 
         if target.exists:

@@ -75,7 +75,7 @@ class EBot(eBot.eBot):
 
 
         if theta:
-            INCR = 0.15 # experimentally obtained, loljk it's a bullshit value
+            INCR = 0.17 # experimentally obtained, loljk it's a bullshit value
             print 'Angular Movement Desired: {:.3f}, Direction: {}'.format(abs(theta), direction)
             sleep( abs(theta / INCR) * 0.1 )
             self.stop()
@@ -118,6 +118,49 @@ class EBot(eBot.eBot):
             sleep(time)
             self.stop()
             return
+
+    # def pivot(self, direction='counterclockwise', speed=0.35, theta=None, time=None):
+    #     pivot_map = {
+    #         'clockwise':         ( speed,-speed),
+    #         'counterclockwise':  (-speed, speed)
+    #     }
+    #
+    #     # Part of better code
+    #     if theta:
+    #         tolerance = 0.05
+    #         init_theta = self.theta
+    #
+    #     self.wheels(*pivot_map[direction])
+    #
+    #     if theta:
+    #         if direction == 'clockwise':
+    #             desired = init_theta - theta
+    #         elif direction == 'counterclockwise':
+    #             desired = init_theta + theta
+    #         # adjust for how eBot API handles theta [0, 2*pi]
+    #         if desired > 2*pi:
+    #             desired -= 2*pi
+    #         elif desired < 0:
+    #             desired += 2*pi
+    #
+    #
+    #         # keep turning till we hit our mark
+    #         try:
+    #             while True:
+    #                 sleep(0.05)
+    #                 curr = self.theta
+    #                 print 'Desired: {:.2f}, Current: {:.2f}, Init: {:.2f}'.format(desired, curr, init_theta)
+    #                 if abs(curr - desired) < tolerance:
+    #                     break
+    #         except KeyboardInterrupt:
+    #             pass
+    #         self.stop()
+    #         return
+    #
+    #     if time:
+    #         sleep(time)
+    #         self.stop()
+    #         return
 
     def stop(self):
         self.wheels(0,0)

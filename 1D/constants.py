@@ -6,3 +6,5 @@ GRID_Y_MAX = 14
 
 LOG      = True
 TEST_LOG = True
+
+FAN_BASE_URL = 'http://10.21.115.196/fan1'

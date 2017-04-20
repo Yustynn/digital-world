@@ -28,19 +28,21 @@ colorizers = {color: colorizer_maker(code) for color, code in colorbase.iteritem
 # prints actual logs
 def log(*args, **kwargs):
     if LOG:
-        color = kwargs.get('color', None)
+        color = kwargs.get('color', None) if kwargs else None
         for arg in args:
             if colorizers.get(color, None):
                 print colorizers[color](arg)
             else:
                 print arg
+        print '\n'
 
 # prints test logs
-def tlog(color=None, *args):
+def tlog(*args, **kwargs):
     if TEST_LOG:
-        color = kwargs.get('color', None)
+        color = kwargs.get('color', None) if kwargs else None
         for arg in args:
             if colorizers.get(color, None):
                 print colorizers[color](arg)
             else:
                 print arg
+        print '\n'

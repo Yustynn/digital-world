@@ -1,6 +1,8 @@
 from firebase   import firebase
 from threading  import Thread
 
+from helpers    import log, tlog
+
 # firebase setup
 URL = "https://dw-1d-ebot.firebaseio.com/"
 TOKEN = "avxnAEHlshI3X9XUYWpa88AgOsbBmx30DdSV6hqN"
